@@ -7,62 +7,70 @@
 <link rel="icon" href="logo.ico" type="image/x-icon">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&family=Nunito+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
-  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
   :root {
-    --orange:#E8521A; --orange-light:#F47A4A; --orange-pale:#FDF0EB;
-    --orange-dark:#B83D0E; --gray-bg:#F8F7F5; --gray-mid:#E8E6E1;
-    --gray-text:#6B6860; --text:#2C2A27; --white:#FFFFFF;
-    --radius:12px; --radius-sm:8px;
+    --orange:#E8751A;       --orange-light:#F49040;  --orange-pale:#FDF1E8;
+    --orange-dark:#C05E0A;  --green:#6AAF18;         --green-light:#8CC83A;
+    --green-pale:#EFF8E3;   --green-dark:#4D8510;
+    --gray-bg:#F8F7F5;      --gray-mid:#E8E6E1;      --gray-text:#6B6860;
+    --text:#1E1C1A;         --white:#FFFFFF;
+    --radius:12px;          --radius-sm:8px;
     --shadow-card:0 2px 8px rgba(0,0,0,0.07);
-    --shadow-hover:0 8px 28px rgba(0,0,0,0.12);
+    --shadow-hover:0 8px 28px rgba(0,0,0,0.13);
   }
   body { font-family:"Nunito",sans-serif; background:var(--gray-bg); color:var(--text); min-height:100vh; }
+
+  /* ── APP INITIAL STATE ── */
+  #app { display:none; }
 
   /* ── LOGIN ── */
   #login-screen { display:flex; align-items:center; justify-content:center; min-height:100vh; background:var(--gray-bg); }
   .login-box { background:var(--white); border-radius:20px; padding:2.5rem 2rem; width:min(380px,92vw); box-shadow:0 8px 40px rgba(0,0,0,0.12); text-align:center; }
-  .login-logo { font-size:2.8rem; margin-bottom:0.5rem; }
+  .login-logo { margin-bottom:1.25rem; display:flex; justify-content:center; }
   .login-box h1 { font-size:1.4rem; font-weight:800; margin-bottom:0.3rem; }
-  .login-box p { font-size:0.875rem; color:var(--gray-text); margin-bottom:1.5rem; }
-  .login-input { width:100%; padding:0.7rem 1rem; border:2px solid var(--gray-mid); border-radius:var(--radius-sm); font-size:1rem; font-family:inherit; outline:none; transition:border-color 0.2s; }
-  .login-input:focus { border-color:var(--orange); }
+  .login-box > p { font-size:0.875rem; color:var(--gray-text); margin-bottom:1.5rem; line-height:1.5; }
+  #pw-input { width:100%; padding:0.7rem 1rem; border:2px solid var(--gray-mid); border-radius:var(--radius-sm); font-size:1rem; font-family:inherit; outline:none; transition:border-color 0.2s; margin-top:0.25rem; }
+  #pw-input:focus { border-color:var(--orange); }
   .login-btn { width:100%; margin-top:0.75rem; padding:0.75rem; background:var(--orange); color:#fff; border:none; border-radius:var(--radius-sm); font-size:1rem; font-weight:700; font-family:inherit; cursor:pointer; transition:background 0.15s; }
   .login-btn:hover { background:var(--orange-dark); }
   .login-error { display:none; color:#c0392b; font-size:0.8rem; margin-top:0.5rem; }
+  .login-footer { font-size:0.72rem; color:var(--gray-text); margin-top:1.25rem; opacity:0.7; }
 
   /* ── HEADER ── */
-  .header { background:var(--white); border-bottom:1px solid var(--gray-mid); position:sticky; top:0; z-index:200; }
-  .header-inner { max-width:880px; margin:0 auto; padding:0 1.5rem; height:56px; display:flex; align-items:center; justify-content:space-between; }
-  .logo { font-size:1.05rem; font-weight:800; color:var(--text); display:flex; align-items:center; gap:8px; }
-  .logo-icon { width:30px; height:30px; background:var(--orange); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:1rem; }
-  .logout-btn { background:none; border:1px solid var(--gray-mid); border-radius:var(--radius-sm); padding:5px 12px; font-size:0.78rem; font-weight:600; font-family:inherit; color:var(--gray-text); cursor:pointer; transition:all 0.15s; }
-  .logout-btn:hover { border-color:var(--orange-light); color:var(--orange); }
+  .site-header { background:var(--white); border-bottom:1px solid var(--gray-mid); position:sticky; top:0; z-index:200; }
+  .header-inner { max-width:900px; margin:0 auto; padding:0 1.5rem; height:58px; display:flex; align-items:center; justify-content:space-between; }
+  .header-brand { display:flex; align-items:center; gap:10px; text-decoration:none; }
+  .header-dot { width:38px; height:38px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .header-brand-text h1 { font-size:1rem; font-weight:800; color:var(--text); line-height:1.2; }
+  .header-brand-text span { font-size:0.7rem; color:var(--gray-text); font-weight:600; }
+  .logout-btn { background:none; border:1px solid var(--gray-mid); border-radius:var(--radius-sm); padding:5px 14px; font-size:0.78rem; font-weight:600; font-family:inherit; color:var(--gray-text); cursor:pointer; transition:all 0.15s; white-space:nowrap; }
+  .logout-btn:hover { border-color:var(--orange); color:var(--orange); }
 
   /* ── HERO ── */
   .hero { background:linear-gradient(135deg,var(--white) 0%,var(--orange-pale) 100%); border-bottom:1px solid var(--gray-mid); padding:2.25rem 1.5rem; text-align:center; }
   .hero-inner { max-width:620px; margin:0 auto; }
-  .hero h2 { font-family:"Nunito",sans-serif; font-size:1.7rem; font-weight:800; margin-bottom:0.6rem; }
+  .hero h2 { font-size:1.7rem; font-weight:800; margin-bottom:0.6rem; line-height:1.25; }
   .hero h2 span { color:var(--orange); }
   .hero p { font-size:0.95rem; color:var(--gray-text); line-height:1.7; max-width:500px; margin:0 auto; }
 
   /* ── NAVIGATION — Pill Tabs ── */
-  .nav { background:var(--white); border-bottom:1px solid var(--gray-mid); position:sticky; top:56px; z-index:100; }
-  .nav-inner { max-width:880px; margin:0 auto; padding:10px 1.5rem; }
-  .nav-pill-track { display:flex; gap:4px; background:var(--gray-bg); border:1px solid var(--gray-mid); border-radius:100px; padding:4px; overflow-x:auto; scrollbar-width:none; }
-  .nav-pill-track::-webkit-scrollbar { display:none; }
-  .nav-btn { background:transparent; border:none; padding:7px 14px; border-radius:100px; font-size:0.82rem; font-weight:600; font-family:"Nunito",sans-serif; color:var(--gray-text); cursor:pointer; transition:all 0.18s; white-space:nowrap; display:flex; align-items:center; gap:5px; }
-  .nav-btn:hover { color:var(--text); background:rgba(255,255,255,0.7); }
+  .section-nav { background:var(--white); border-bottom:1px solid var(--gray-mid); position:sticky; top:58px; z-index:100; padding:10px 1.5rem; }
+  .section-nav-inner { display:flex; gap:4px; max-width:900px; margin:0 auto; background:var(--gray-bg); border:1px solid var(--gray-mid); border-radius:100px; padding:4px; overflow-x:auto; scrollbar-width:none; }
+  .section-nav-inner::-webkit-scrollbar { display:none; }
+  .nav-btn { background:transparent; border:none; padding:7px 15px; border-radius:100px; font-size:0.82rem; font-weight:600; font-family:"Nunito",sans-serif; color:var(--gray-text); cursor:pointer; transition:all 0.18s; white-space:nowrap; display:flex; align-items:center; gap:5px; }
+  .nav-btn:hover { color:var(--text); background:rgba(255,255,255,0.8); }
   .nav-btn.active { background:var(--white); color:var(--text); box-shadow:0 1px 4px rgba(0,0,0,0.12),0 0 0 1px rgba(0,0,0,0.05); }
 
   /* ── MAIN CONTENT ── */
-  .main-content { max-width:880px; margin:0 auto; padding:2rem 1.5rem; }
+  .main-content { max-width:900px; margin:0 auto; padding:2rem 1.5rem; }
   .section-block { display:none; }
   .section-block.active { display:block; }
+
+  /* ── SECTION TITLE ── */
   .section-title { display:flex; align-items:center; gap:12px; margin-bottom:2rem; padding-bottom:1rem; border-bottom:2px solid var(--gray-mid); }
-  .section-icon-badge { width:44px; height:44px; background:var(--orange); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.35rem; flex-shrink:0; box-shadow:0 3px 10px rgba(232,82,26,0.3); }
-  .section-title h2 { font-family:"Nunito",sans-serif; font-size:1.35rem; font-weight:800; }
-  .section-title p { font-size:0.8rem; color:var(--gray-text); margin-top:1px; }
+  .section-icon-badge { width:44px; height:44px; background:var(--orange); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0; box-shadow:0 3px 10px rgba(232,117,26,0.3); }
+  .section-title h2 { font-size:1.35rem; font-weight:800; }
+  .section-title p { font-size:0.8rem; color:var(--gray-text); margin-top:2px; }
 
   /* ── INFO BOX ── */
   .info-box { background:var(--orange-pale); border:1px solid #F5C9B3; border-left:4px solid var(--orange); border-radius:var(--radius-sm); padding:0.875rem 1.125rem; margin-bottom:1.75rem; font-size:0.875rem; color:var(--orange-dark); line-height:1.6; }
@@ -70,47 +78,50 @@
 
   /* ── SUBSECTIONS ── */
   .subsection { margin-bottom:1.75rem; }
-  .subsection--video { background:rgba(30,28,26,0.055); border-radius:16px; padding:1.25rem 1.25rem 1.5rem; }
-  .subsection--photo { background:rgba(253,240,235,0.75); border-radius:16px; padding:1.25rem 1.25rem 1.5rem; border:1px solid rgba(245,201,179,0.4); }
+  .subsection--video { background:rgba(30,28,26,0.05); border-radius:16px; padding:1.25rem 1.25rem 1.5rem; }
+  .subsection--photo { background:rgba(106,175,24,0.07); border-radius:16px; padding:1.25rem 1.25rem 1.5rem; border:1px solid rgba(106,175,24,0.15); }
 
   /* ── SUBSECTION LABEL PILLS ── */
   .subsection-label { display:inline-flex; align-items:center; gap:7px; margin-bottom:1rem; font-size:0.67rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; padding:5px 14px 5px 10px; border-radius:100px; line-height:1; }
-  .subsection--video .subsection-label { background:#2C2A27; color:#FDE8DC; box-shadow:0 2px 8px rgba(44,42,39,0.22); }
-  .subsection--photo .subsection-label { background:var(--orange); color:#fff; box-shadow:0 2px 8px rgba(232,82,26,0.28); }
+  .subsection--video .subsection-label { background:#2C2A27; color:#FDE8DC; box-shadow:0 2px 6px rgba(44,42,39,0.2); }
+  .subsection--photo .subsection-label { background:var(--green); color:#fff; box-shadow:0 2px 6px rgba(106,175,24,0.28); }
 
   /* ── MEDIA GRID ── */
   .media-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:1rem; }
   .media-card { background:var(--white); border:1px solid var(--gray-mid); border-radius:var(--radius); overflow:hidden; transition:border-color 0.2s,transform 0.18s,box-shadow 0.18s; cursor:pointer; box-shadow:var(--shadow-card); }
-  .media-card:hover { border-color:var(--orange-light); transform:translateY(-4px); box-shadow:var(--shadow-hover); }
+  .media-card:hover { transform:translateY(-4px); box-shadow:var(--shadow-hover); }
+  .subsection--video .media-card:hover { border-color:var(--orange-light); }
+  .subsection--photo .media-card:hover { border-color:var(--green-light); }
   .media-thumb { width:100%; padding-top:66%; background:var(--orange-pale); position:relative; }
   .media-thumb-inner { position:absolute; top:0; left:0; right:0; bottom:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; }
   .thumb-icon { width:36px; height:36px; background:var(--orange); border-radius:50%; display:flex; align-items:center; justify-content:center; }
   .thumb-icon svg { width:16px; height:16px; fill:white; }
   .thumb-type { font-size:0.65rem; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--orange-dark); background:var(--white); padding:2px 8px; border-radius:20px; border:1px solid var(--orange-light); }
   .media-card-body { padding:0.65rem 0.8rem 0.7rem; }
-  .media-card-name { font-size:0.78rem; font-weight:600; color:var(--text); line-height:1.4; word-break:break-word; }
+  .media-card-name { font-size:0.9rem; font-weight:700; color:var(--text); line-height:1.35; word-break:break-word; }
+  .subsection--video .media-card-name { font-size:1.05rem; }
 
-  /* ── VIDEO PREVIEW THUMBNAILS ── */
+  /* ── VIDEO THUMBNAIL + PLAY BUTTON ── */
   .play-btn-overlay { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; border-radius:12px 12px 0 0; background:rgba(0,0,0,0.06); transition:background 0.2s; }
   .media-card:hover .play-btn-overlay { background:rgba(0,0,0,0.22); }
   .play-btn-overlay svg { width:52px; height:52px; filter:drop-shadow(0 2px 8px rgba(0,0,0,0.35)); transition:transform 0.15s; }
   .media-card:hover .play-btn-overlay svg { transform:scale(1.1); }
 
   /* ── LIGHTBOX ── */
-  #lightbox { display:none; position:fixed; inset:0; z-index:1000; background:rgba(20,18,16,0.95); flex-direction:column; align-items:center; justify-content:center; backdrop-filter:blur(2px); }
+  #lightbox { display:none; position:fixed; inset:0; z-index:1000; background:rgba(16,14,12,0.95); flex-direction:column; align-items:center; justify-content:center; }
   #lightbox.open { display:flex; }
   #lb-img-wrap { position:relative; display:flex; align-items:center; justify-content:center; }
   #lb-img { max-width:92vw; max-height:80vh; object-fit:contain; border-radius:10px; transition:transform 0.25s; box-shadow:0 16px 64px rgba(0,0,0,0.5); }
-  #lb-caption { color:#fff; font-size:0.875rem; margin-top:1.1rem; text-align:center; opacity:0.85; max-width:80vw; font-weight:600; }
-  #lb-counter { color:rgba(255,255,255,0.4); font-size:0.72rem; opacity:1; margin-top:0.35rem; letter-spacing:0.05em; }
-  .lb-btn { position:fixed; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.18); color:#fff; font-size:2rem; width:52px; height:72px; cursor:pointer; border-radius:14px; display:flex; align-items:center; justify-content:center; transition:all 0.15s; backdrop-filter:blur(8px); }
+  #lb-caption { color:#fff; font-size:0.875rem; margin-top:1rem; text-align:center; opacity:0.85; max-width:80vw; font-weight:600; }
+  #lb-counter { color:rgba(255,255,255,0.4); font-size:0.72rem; margin-top:0.35rem; letter-spacing:0.05em; }
+  .lb-btn { position:fixed; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.18); color:#fff; font-size:2rem; width:52px; height:72px; cursor:pointer; border-radius:14px; display:flex; align-items:center; justify-content:center; transition:all 0.15s; }
   .lb-btn:hover { background:rgba(255,255,255,0.22); transform:translateY(-50%) scale(1.05); }
   #lb-prev { left:12px; }
   #lb-next { right:12px; }
-  #lb-close { position:fixed; top:16px; right:16px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.18); color:#fff; font-size:1.2rem; width:42px; height:42px; cursor:pointer; border-radius:50%; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(8px); transition:all 0.15s; }
-  #lb-close:hover { background:rgba(255,255,255,0.25); }
-  #lb-rotate { position:fixed; top:16px; right:70px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.18); color:#fff; font-size:1.1rem; width:42px; height:42px; cursor:pointer; border-radius:50%; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(8px); transition:all 0.15s; }
-  #lb-rotate:hover { background:rgba(255,255,255,0.25); }
+  #lb-close { position:fixed; top:16px; right:16px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.18); color:#fff; font-size:1.2rem; width:42px; height:42px; cursor:pointer; border-radius:50%; display:flex; align-items:center; justify-content:center; transition:all 0.15s; }
+  #lb-close:hover { background:rgba(255,255,255,0.28); }
+  #lb-rotate { position:fixed; top:16px; right:70px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.18); color:#fff; font-size:1.1rem; width:42px; height:42px; cursor:pointer; border-radius:50%; display:flex; align-items:center; justify-content:center; transition:all 0.15s; }
+  #lb-rotate:hover { background:rgba(255,255,255,0.28); }
   #lb-video-wrap { display:none; }
   #lb-iframe { width:min(88vw,854px); height:min(49.5vw,480px); border:none; border-radius:10px; box-shadow:0 16px 64px rgba(0,0,0,0.5); }
 
@@ -122,6 +133,7 @@
     .main-content { padding:1.5rem 1rem; }
     .header-inner { padding:0 1rem; }
     .hero { padding:1.75rem 1rem; }
+    .section-nav { padding:8px 1rem; }
     .subsection--video,.subsection--photo { padding:1rem 1rem 1.25rem; }
     .lb-btn { width:38px; height:56px; font-size:1.4rem; }
     #lb-prev { left:4px; }
@@ -129,7 +141,7 @@
   }
   @media (max-width:400px) {
     .media-grid { grid-template-columns:1fr 1fr; }
-    .media-card-name { font-size:0.72rem; }
+    .media-card-name { font-size:0.82rem; }
   }
 </style>
 </head>
@@ -179,6 +191,7 @@
       <button class="nav-btn" onclick="showSection('obyvak',this)">🛋️ Obývák</button>
       <button class="nav-btn" onclick="showSection('franzpokoj',this)">🛏️ Franz pokoj</button>
       <button class="nav-btn" onclick="showSection('asistent',this)">👤 Asistentský pokoj</button>
+      <button class="nav-btn" onclick="showSection('technicka',this)">🔧 Technická místnost</button>
     </div>
   </nav>
  
@@ -192,14 +205,14 @@
               <img src="https://aid4gold.github.io/franz-/%C5%A1atna%20asistent.webp" alt="šatna asistent" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
               <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
             </div>
-            <div class="media-card-body"><div class="media-card-name">šatna asistent</div></div>
+            <div class="media-card-body"><div class="media-card-name">Šatna asistent</div></div>
           </div>
           <div class="media-card">
             <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
               <img src="https://aid4gold.github.io/franz-/wc%20a%20umyvadlo%20asistent%20%C5%A1atna.webp" alt="wc a umyvadlo asistent šatna" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
               <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
             </div>
-            <div class="media-card-body"><div class="media-card-name">wc a umyvadlo asistent šatna</div></div>
+            <div class="media-card-body"><div class="media-card-name">Wc a umyvadlo asistent šatna</div></div>
           </div>
       </div></div>
     </div>
@@ -210,27 +223,27 @@
       <div class="subsection subsection--video"><div class="subsection-label"><svg viewBox="0 0 12 12" fill="currentColor" style="width:9px;height:9px;flex-shrink:0"><path d="M3 2l8 4-8 4V2z"/></svg>Videa</div><div class="media-grid">
           <div class="media-card">
             <div class="media-thumb video-preview" style="padding-top:56%;position:relative;" data-videoid="fQSRHn8YD5I"><img src="https://img.youtube.com/vi/fQSRHn8YD5I/mqdefault.jpg" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy"/><div class="play-btn-overlay"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.62)"/><path d="M24 18l20 12-20 12V18z" fill="white"/></svg></div></div>
-            <div class="media-card-body"><div class="media-card-name">kuchyň – lednice</div></div>
+            <div class="media-card-body"><div class="media-card-name">Lednice</div></div>
           </div>
           <div class="media-card">
             <div class="media-thumb video-preview" style="padding-top:56%;position:relative;" data-videoid="mmtsS8p41TY"><img src="https://img.youtube.com/vi/mmtsS8p41TY/mqdefault.jpg" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy"/><div class="play-btn-overlay"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.62)"/><path d="M24 18l20 12-20 12V18z" fill="white"/></svg></div></div>
-            <div class="media-card-body"><div class="media-card-name">kuchyň – komoda s doklady a přehled lék</div></div>
+            <div class="media-card-body"><div class="media-card-name">Komoda s doklady a přehled lék</div></div>
           </div>
           <div class="media-card">
             <div class="media-thumb video-preview" style="padding-top:56%;position:relative;" data-videoid="JgsB0VlGY50"><img src="https://img.youtube.com/vi/JgsB0VlGY50/mqdefault.jpg" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy"/><div class="play-btn-overlay"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.62)"/><path d="M24 18l20 12-20 12V18z" fill="white"/></svg></div></div>
-            <div class="media-card-body"><div class="media-card-name">kuchyň – myčka</div></div>
+            <div class="media-card-body"><div class="media-card-name">Myčka</div></div>
           </div>
           <div class="media-card">
             <div class="media-thumb video-preview" style="padding-top:56%;position:relative;" data-videoid="9p5RviaN3uw"><img src="https://img.youtube.com/vi/9p5RviaN3uw/mqdefault.jpg" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy"/><div class="play-btn-overlay"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.62)"/><path d="M24 18l20 12-20 12V18z" fill="white"/></svg></div></div>
-            <div class="media-card-body"><div class="media-card-name">kuchyň – vaření čaje</div></div>
+            <div class="media-card-body"><div class="media-card-name">Vaření čaje</div></div>
           </div>
           <div class="media-card">
             <div class="media-thumb video-preview" style="padding-top:56%;position:relative;" data-videoid="q2Rg5rqd7tc"><img src="https://img.youtube.com/vi/q2Rg5rqd7tc/mqdefault.jpg" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy"/><div class="play-btn-overlay"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.62)"/><path d="M24 18l20 12-20 12V18z" fill="white"/></svg></div></div>
-            <div class="media-card-body"><div class="media-card-name">kuchyň – zásuvka chleba a pečivo</div></div>
+            <div class="media-card-body"><div class="media-card-name">Zásuvka chleba a pečivo</div></div>
           </div>
           <div class="media-card">
             <div class="media-thumb video-preview" style="padding-top:56%;position:relative;" data-videoid="qO6mZBFZgT0"><img src="https://img.youtube.com/vi/qO6mZBFZgT0/mqdefault.jpg" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy"/><div class="play-btn-overlay"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.62)"/><path d="M24 18l20 12-20 12V18z" fill="white"/></svg></div></div>
-            <div class="media-card-body"><div class="media-card-name">kuchyň -mikrovlnka</div></div>
+            <div class="media-card-body"><div class="media-card-name">Mikrovlnka</div></div>
           </div>
       </div></div>
       <div class="subsection subsection--photo"><div class="subsection-label"><svg viewBox="0 0 12 12" fill="currentColor" style="width:10px;height:10px;flex-shrink:0"><rect x="0.5" y="2" width="11" height="8.5" rx="1.5"/><circle cx="3.5" cy="5.5" r="1.3" fill="rgba(255,255,255,0.9)"/><path d="M0.5 9.5 L3 6.5 L5.5 9 L7.5 7 L11.5 10.5" stroke="rgba(255,255,255,0.85)" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>Fotografie</div><div class="media-grid">
@@ -239,140 +252,140 @@
               <img src="https://aid4gold.github.io/franz-/k%C3%A1vovar%20na%20kapsle%20a%20%C4%8Daj.webp" alt="kávovar na kapsle a čaj" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
               <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
             </div>
-            <div class="media-card-body"><div class="media-card-name">kávovar na kapsle a čaj</div></div>
+            <div class="media-card-body"><div class="media-card-name">Kávovar na kapsle a čaj</div></div>
           </div>
           <div class="media-card">
             <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
               <img src="https://aid4gold.github.io/franz-/kuchy%C5%88%20le%C5%A1t%C3%ADc%C3%AD%20ut%C4%9Brka%20na%20lednici%20-%20only.webp" alt="kuchyň leštící utěrka na lednici - only" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
               <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
             </div>
-            <div class="media-card-body"><div class="media-card-name">kuchyň leštící utěrka na lednici - only</div></div>
+            <div class="media-card-body"><div class="media-card-name">Kuchyň leštící utěrka na lednici - only</div></div>
           </div>
           <div class="media-card">
             <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
               <img src="https://aid4gold.github.io/franz-/kuchy%C5%88%20my%C4%8Dka%20z%C3%A1suvka%20na%20odpadky%20a%20ru%C4%8Dn%C3%ADky%20na%20myt%C3%AD.webp" alt="kuchyň myčka zásuvka na odpadky a ručníky na mytí" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
               <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
             </div>
-            <div class="media-card-body"><div class="media-card-name">kuchyň myčka zásuvka na odpadky a ručníky na mytí</div></div>
+            <div class="media-card-body"><div class="media-card-name">Kuchyň myčka zásuvka na odpadky a ručníky na mytí</div></div>
           </div>
           <div class="media-card">
             <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
               <img src="https://aid4gold.github.io/franz-/kuchy%C5%88%20n%C3%A1dob%C3%AD%20sk%C5%99%C3%AD%C5%88ka..webp" alt="kuchyň nádobí skříňka" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
               <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
             </div>
-            <div class="media-card-body"><div class="media-card-name">kuchyň nádobí skříňka</div></div>
+            <div class="media-card-body"><div class="media-card-name">Kuchyň nádobí skříňka</div></div>
           </div>
           <div class="media-card">
             <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
               <img src="https://aid4gold.github.io/franz-/kuchyn%20skrin%20na%20caj%20a%20kapsle%20kafe%20zoom.webp" alt="kuchyň skříň na čaj a kapsle kafe zoom" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
               <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
             </div>
-            <div class="media-card-body"><div class="media-card-name">kuchyň skříň na čaj a kapsle kafe zoom</div></div>
+            <div class="media-card-body"><div class="media-card-name">Kuchyň skříň na čaj a kapsle kafe zoom</div></div>
           </div>
           <div class="media-card">
             <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
               <img src="https://aid4gold.github.io/franz-/kuchyn%20skrin%20na%20caj%20a%20kapsle%20kafe.webp" alt="kuchyň skříň na čaj a kapsle kafe" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
               <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
             </div>
-            <div class="media-card-body"><div class="media-card-name">kuchyň skříň na čaj a kapsle kafe</div></div>
+            <div class="media-card-body"><div class="media-card-name">Kuchyň skříň na čaj a kapsle kafe</div></div>
           </div>
           <div class="media-card">
             <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
               <img src="https://aid4gold.github.io/franz-/kuchy%C5%88%20ut%C4%9Brka%20na%20kv%C4%9Btiny%20-%20only.webp" alt="kuchyň utěrka na květiny - only" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
               <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
             </div>
-            <div class="media-card-body"><div class="media-card-name">kuchyň utěrka na květiny - only</div></div>
+            <div class="media-card-body"><div class="media-card-name">Kuchyň utěrka na květiny - only</div></div>
           </div>
           <div class="media-card">
             <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
               <img src="https://aid4gold.github.io/franz-/kuchy%C5%88%20voda%20sirup%20.webp" alt="kuchyň voda sirup" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
               <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
             </div>
-            <div class="media-card-body"><div class="media-card-name">kuchyň voda sirup</div></div>
+            <div class="media-card-body"><div class="media-card-name">Kuchyň voda sirup</div></div>
           </div>
           <div class="media-card">
             <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
               <img src="https://aid4gold.github.io/franz-/kuchy%C5%88%20vyle%C5%A1t%C4%9Bn%C3%BD%20povrch%20lednice%20-%20zrcadlo%20pro%20kontrolu.webp" alt="kuchyň vyleštěný povrch lednice - zrcadlo pro kontrolu" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
               <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
             </div>
-            <div class="media-card-body"><div class="media-card-name">kuchyň vyleštěný povrch lednice - zrcadlo pro kontrolu</div></div>
+            <div class="media-card-body"><div class="media-card-name">Kuchyň vyleštěný povrch lednice - zrcadlo pro kontrolu</div></div>
           </div>
           <div class="media-card">
             <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
               <img src="https://aid4gold.github.io/franz-/kuchy%C5%88%20z%C3%A1suvka%20_%20voda.webp" alt="kuchyň zásuvka _ voda" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
               <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
             </div>
-            <div class="media-card-body"><div class="media-card-name">kuchyň zásuvka _ voda</div></div>
+            <div class="media-card-body"><div class="media-card-name">Kuchyň zásuvka _ voda</div></div>
           </div>
           <div class="media-card">
             <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
               <img src="https://aid4gold.github.io/franz-/kuchy%C5%88%20z%C3%A1suvka%20detail%20.webp" alt="kuchyň zásuvka detail" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
               <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
             </div>
-            <div class="media-card-body"><div class="media-card-name">kuchyň zásuvka detail</div></div>
+            <div class="media-card-body"><div class="media-card-name">Kuchyň zásuvka detail</div></div>
           </div>
           <div class="media-card">
             <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
               <img src="https://aid4gold.github.io/franz-/kuchy%C5%88%20z%C3%A1suvka%20chleba%20a%20ovoce.webp" alt="kuchyň zásuvka chleba a ovoce" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
               <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
             </div>
-            <div class="media-card-body"><div class="media-card-name">kuchyň zásuvka chleba a ovoce</div></div>
+            <div class="media-card-body"><div class="media-card-name">Kuchyň zásuvka chleba a ovoce</div></div>
           </div>
           <div class="media-card">
             <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
               <img src="https://aid4gold.github.io/franz-/kuchy%C5%88%20z%C3%A1suvka%20na%20tablety%20do%20my%C4%8Dky%20-%20ut%C4%9Brky%20na%20povrch.webp" alt="kuchyň zásuvka na tablety do myčky - utěrky na povrch" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
               <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
             </div>
-            <div class="media-card-body"><div class="media-card-name">kuchyň zásuvka na tablety do myčky - utěrky na povrch</div></div>
+            <div class="media-card-body"><div class="media-card-name">Kuchyň zásuvka na tablety do myčky - utěrky na povrch</div></div>
           </div>
           <div class="media-card">
             <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
               <img src="https://aid4gold.github.io/franz-/kuchy%C5%88%20z%C3%A1suvka%20no%C5%BEe.webp" alt="kuchyň zásuvka nože" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
               <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
             </div>
-            <div class="media-card-body"><div class="media-card-name">kuchyň zásuvka nože</div></div>
+            <div class="media-card-body"><div class="media-card-name">Kuchyň zásuvka nože</div></div>
           </div>
           <div class="media-card">
             <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
               <img src="https://aid4gold.github.io/franz-/kuchy%C5%88%20z%C3%A1suvka%20ovoce.webp" alt="kuchyň zásuvka ovoce" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
               <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
             </div>
-            <div class="media-card-body"><div class="media-card-name">kuchyň zásuvka ovoce</div></div>
+            <div class="media-card-body"><div class="media-card-name">Kuchyň zásuvka ovoce</div></div>
           </div>
           <div class="media-card">
             <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
               <img src="https://aid4gold.github.io/franz-/mikrovln%C3%A1%20trouba.webp" alt="mikrovlná trouba" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
               <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
             </div>
-            <div class="media-card-body"><div class="media-card-name">mikrovlná trouba</div></div>
+            <div class="media-card-body"><div class="media-card-name">Mikrovlná trouba</div></div>
           </div>
           <div class="media-card">
             <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
               <img src="https://aid4gold.github.io/franz-/ovl%C3%A1d%C3%A1n%C3%AD%20mikrovln%C3%A1%20trouba.webp" alt="ovládání mikrovlná trouba" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
               <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
             </div>
-            <div class="media-card-body"><div class="media-card-name">ovládání mikrovlná trouba</div></div>
+            <div class="media-card-body"><div class="media-card-name">Ovládání mikrovlná trouba</div></div>
           </div>
           <div class="media-card">
             <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
               <img src="https://aid4gold.github.io/franz-/pol%C3%A9vkov%C3%A1%20m%C3%ADsa.webp" alt="polévková mísa" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
               <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
             </div>
-            <div class="media-card-body"><div class="media-card-name">polévková mísa</div></div>
+            <div class="media-card-body"><div class="media-card-name">Polévková mísa</div></div>
           </div>
           <div class="media-card">
             <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
               <img src="https://aid4gold.github.io/franz-/varn%C3%A1%20deska.webp" alt="varná deska" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
               <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
             </div>
-            <div class="media-card-body"><div class="media-card-name">varná deska</div></div>
+            <div class="media-card-body"><div class="media-card-name">Varná deska</div></div>
           </div>
           <div class="media-card">
             <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
               <img src="https://aid4gold.github.io/franz-/ve%C4%8Der%20-%20porce%20polovina%20sta%C4%8D%C3%AD.webp" alt="večer - porce polovina stačí" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
               <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
             </div>
-            <div class="media-card-body"><div class="media-card-name">večer - porce polovina stačí</div></div>
+            <div class="media-card-body"><div class="media-card-name">Večer - porce polovina stačí</div></div>
           </div>
       </div></div>
       <div class="subsection subsection--photo"><div class="subsection-label"><svg viewBox="0 0 12 12" fill="currentColor" style="width:10px;height:10px;flex-shrink:0"><rect x="0.5" y="2" width="11" height="8.5" rx="1.5"/><circle cx="3.5" cy="5.5" r="1.3" fill="rgba(255,255,255,0.9)"/><path d="M0.5 9.5 L3 6.5 L5.5 9 L7.5 7 L11.5 10.5" stroke="rgba(255,255,255,0.85)" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>Zakázané nože</div><div class="media-grid">
@@ -381,66 +394,33 @@
               <img src="https://aid4gold.github.io/franz-/diamantov%C3%A9%20no%C5%BEe%20nepou%C5%BE%C3%ADvat.webp" alt="diamantové nože nepoužívat" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
               <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
             </div>
-            <div class="media-card-body"><div class="media-card-name">diamantové nože nepoužívat</div></div>
+            <div class="media-card-body"><div class="media-card-name">Diamantové nože nepoužívat</div></div>
           </div>
           <div class="media-card">
             <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
               <img src="https://aid4gold.github.io/franz-/diamantov%C3%A9%20no%C5%BEe%20NO%20GO.webp" alt="diamantové nože NO GO" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
               <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
             </div>
-            <div class="media-card-body"><div class="media-card-name">diamantové nože NO GO</div></div>
-          </div>
-      </div></div>
-      <div class="subsection subsection--photo"><div class="subsection-label"><svg viewBox="0 0 12 12" fill="currentColor" style="width:10px;height:10px;flex-shrink:0"><rect x="0.5" y="2" width="11" height="8.5" rx="1.5"/><circle cx="3.5" cy="5.5" r="1.3" fill="rgba(255,255,255,0.9)"/><path d="M0.5 9.5 L3 6.5 L5.5 9 L7.5 7 L11.5 10.5" stroke="rgba(255,255,255,0.85)" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>Technická místnost</div><div class="media-grid">
-          <div class="media-card">
-            <div class="media-thumb video-preview" style="padding-top:56%;position:relative;" data-videoid="BcQ4hN58Gk8"><img src="https://img.youtube.com/vi/BcQ4hN58Gk8/mqdefault.jpg" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy"/><div class="play-btn-overlay"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.62)"/><path d="M24 18l20 12-20 12V18z" fill="white"/></svg></div></div>
-            <div class="media-card-body"><div class="media-card-name">technická místnost</div></div>
-          </div>
-          <div class="media-card">
-            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
-              <img src="https://aid4gold.github.io/franz-/technick%C3%A1%20m%C3%ADstnost%20-%20mop.webp" alt="technická místnost - mop" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
-              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
-            </div>
-            <div class="media-card-body"><div class="media-card-name">technická místnost - mop</div></div>
-          </div>
-          <div class="media-card">
-            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
-              <img src="https://aid4gold.github.io/franz-/technick%C3%A1%20m%C3%ADstnost%20-%20vysava%C4%8D.webp" alt="technická místnost - vysavač" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
-              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
-            </div>
-            <div class="media-card-body"><div class="media-card-name">technická místnost - vysavač</div></div>
-          </div>
-          <div class="media-card">
-            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
-              <img src="https://aid4gold.github.io/franz-/technick%C3%A1%20m%C3%ADstnost%20sk%C5%99%C3%ADn%20na%20p%C5%99%C3%ADpravky%20%C4%8Di%C5%A1t%C4%9Bn%C3%AD.webp" alt="technická místnost skříň na přípravky čištění" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
-              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
-            </div>
-            <div class="media-card-body"><div class="media-card-name">technická místnost skříň na přípravky čištění</div></div>
-          </div>
-          <div class="media-card">
-            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
-              <img src="https://aid4gold.github.io/franz-/technick%C3%A1%20m%C3%ADstost%20-%20pra%C4%8Dka%20asistent%20v%C4%9Bci.webp" alt="technická místost - pračka asistent věci" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
-              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
-            </div>
-            <div class="media-card-body"><div class="media-card-name">technická místost - pračka asistent věci</div></div>
+            <div class="media-card-body"><div class="media-card-name">Diamantové nože NO GO</div></div>
           </div>
       </div></div>
     </div>
  
+
     <div class="section-block" id="sec-obyvak">
       <div class="section-title"><div class="section-icon-badge">🛋️</div><div><h2>Obývák</h2><p>Instrukce pro obývací pokoj</p></div></div>
       <div class="subsection subsection--video"><div class="subsection-label"><svg viewBox="0 0 12 12" fill="currentColor" style="width:9px;height:9px;flex-shrink:0"><path d="M3 2l8 4-8 4V2z"/></svg>Videa</div><div class="media-grid">
           <div class="media-card">
             <div class="media-thumb video-preview" style="padding-top:56%;position:relative;" data-videoid="q03vLqIIFck"><img src="https://img.youtube.com/vi/q03vLqIIFck/mqdefault.jpg" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy"/><div class="play-btn-overlay"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.62)"/><path d="M24 18l20 12-20 12V18z" fill="white"/></svg></div></div>
-            <div class="media-card-body"><div class="media-card-name">obývák - dveře balkon brzda</div></div>
+            <div class="media-card-body"><div class="media-card-name">Dveře balkon brzda</div></div>
           </div>
           <div class="media-card">
             <div class="media-thumb video-preview" style="padding-top:56%;position:relative;" data-videoid="zHwH3D8cmWM"><img src="https://img.youtube.com/vi/zHwH3D8cmWM/mqdefault.jpg" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy"/><div class="play-btn-overlay"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.62)"/><path d="M24 18l20 12-20 12V18z" fill="white"/></svg></div></div>
-            <div class="media-card-body"><div class="media-card-name">obývák - japonské záclony</div></div>
+            <div class="media-card-body"><div class="media-card-name">Japonské záclony</div></div>
           </div>
           <div class="media-card">
             <div class="media-thumb video-preview" style="padding-top:56%;position:relative;" data-videoid="cTumESiOw0Y"><img src="https://img.youtube.com/vi/cTumESiOw0Y/mqdefault.jpg" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy"/><div class="play-btn-overlay"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.62)"/><path d="M24 18l20 12-20 12V18z" fill="white"/></svg></div></div>
-            <div class="media-card-body"><div class="media-card-name">obývák .- markýza</div></div>
+            <div class="media-card-body"><div class="media-card-name">Markýza</div></div>
           </div>
       </div></div>
       <div class="subsection subsection--photo"><div class="subsection-label"><svg viewBox="0 0 12 12" fill="currentColor" style="width:10px;height:10px;flex-shrink:0"><rect x="0.5" y="2" width="11" height="8.5" rx="1.5"/><circle cx="3.5" cy="5.5" r="1.3" fill="rgba(255,255,255,0.9)"/><path d="M0.5 9.5 L3 6.5 L5.5 9 L7.5 7 L11.5 10.5" stroke="rgba(255,255,255,0.85)" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>Fotografie</div><div class="media-grid">
@@ -545,30 +525,31 @@
       </div></div>
     </div>
  
+
     <div class="section-block" id="sec-franzpokoj">
       <div class="section-title"><div class="section-icon-badge">🛏️</div><div><h2>Franz pokoj &amp; koupelna</h2><p>Pokoj, postel, koupelna a hygienické postupy</p></div></div>
       <div class="subsection subsection--video"><div class="subsection-label"><svg viewBox="0 0 12 12" fill="currentColor" style="width:9px;height:9px;flex-shrink:0"><path d="M3 2l8 4-8 4V2z"/></svg>Videa – pokoj</div><div class="media-grid">
           <div class="media-card">
             <div class="media-thumb video-preview" style="padding-top:56%;position:relative;" data-videoid="d4Dh7GdDoQA"><img src="https://img.youtube.com/vi/d4Dh7GdDoQA/mqdefault.jpg" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy"/><div class="play-btn-overlay"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.62)"/><path d="M24 18l20 12-20 12V18z" fill="white"/></svg></div></div>
-            <div class="media-card-body"><div class="media-card-name">franz pokoj - ovládání postele</div></div>
+            <div class="media-card-body"><div class="media-card-name">Ovládání postele</div></div>
           </div>
           <div class="media-card">
             <div class="media-thumb video-preview" style="padding-top:56%;position:relative;" data-videoid="ezupu84eS6U"><img src="https://img.youtube.com/vi/ezupu84eS6U/mqdefault.jpg" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy"/><div class="play-btn-overlay"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.62)"/><path d="M24 18l20 12-20 12V18z" fill="white"/></svg></div></div>
-            <div class="media-card-body"><div class="media-card-name">franz pokoj - ovládání žaluzií</div></div>
+            <div class="media-card-body"><div class="media-card-name">Ovládání žaluzií</div></div>
           </div>
       </div></div>
       <div class="subsection subsection--video"><div class="subsection-label"><svg viewBox="0 0 12 12" fill="currentColor" style="width:9px;height:9px;flex-shrink:0"><path d="M3 2l8 4-8 4V2z"/></svg>Videa – koupelna</div><div class="media-grid">
           <div class="media-card">
             <div class="media-thumb video-preview" style="padding-top:56%;position:relative;" data-videoid="U7mv6XPxhkk"><img src="https://img.youtube.com/vi/U7mv6XPxhkk/mqdefault.jpg" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy"/><div class="play-btn-overlay"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.62)"/><path d="M24 18l20 12-20 12V18z" fill="white"/></svg></div></div>
-            <div class="media-card-body"><div class="media-card-name">franz koupelna - holení</div></div>
+            <div class="media-card-body"><div class="media-card-name">Holení</div></div>
           </div>
           <div class="media-card">
             <div class="media-thumb video-preview" style="padding-top:56%;position:relative;" data-videoid="1Cuzmgur3F0"><img src="https://img.youtube.com/vi/1Cuzmgur3F0/mqdefault.jpg" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy"/><div class="play-btn-overlay"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.62)"/><path d="M24 18l20 12-20 12V18z" fill="white"/></svg></div></div>
-            <div class="media-card-body"><div class="media-card-name">franz koupelna - koupání</div></div>
+            <div class="media-card-body"><div class="media-card-name">Koupání</div></div>
           </div>
           <div class="media-card">
             <div class="media-thumb video-preview" style="padding-top:56%;position:relative;" data-videoid="1WaFDLGRYLQ"><img src="https://img.youtube.com/vi/1WaFDLGRYLQ/mqdefault.jpg" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy"/><div class="play-btn-overlay"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.62)"/><path d="M24 18l20 12-20 12V18z" fill="white"/></svg></div></div>
-            <div class="media-card-body"><div class="media-card-name">koupelna - pudr vůně lékarnička</div></div>
+            <div class="media-card-body"><div class="media-card-name">Pudr vůně lékarnička</div></div>
           </div>
       </div></div>
       <div class="subsection subsection--photo"><div class="subsection-label"><svg viewBox="0 0 12 12" fill="currentColor" style="width:10px;height:10px;flex-shrink:0"><rect x="0.5" y="2" width="11" height="8.5" rx="1.5"/><circle cx="3.5" cy="5.5" r="1.3" fill="rgba(255,255,255,0.9)"/><path d="M0.5 9.5 L3 6.5 L5.5 9 L7.5 7 L11.5 10.5" stroke="rgba(255,255,255,0.85)" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>Fotografie – pokoj</div><div class="media-grid">
@@ -703,12 +684,13 @@
       </div></div>
     </div>
  
+
     <div class="section-block" id="sec-asistent">
       <div class="section-title"><div class="section-icon-badge">👤</div><div><h2>Asistentský pokoj</h2><p>Zázemí a vybavení pro asistenta</p></div></div>
       <div class="subsection subsection--video"><div class="subsection-label"><svg viewBox="0 0 12 12" fill="currentColor" style="width:9px;height:9px;flex-shrink:0"><path d="M3 2l8 4-8 4V2z"/></svg>Videa</div><div class="media-grid">
           <div class="media-card">
             <div class="media-thumb video-preview" style="padding-top:56%;position:relative;" data-videoid="W4dpe0MLz60"><img src="https://img.youtube.com/vi/W4dpe0MLz60/mqdefault.jpg" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy"/><div class="play-btn-overlay"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.62)"/><path d="M24 18l20 12-20 12V18z" fill="white"/></svg></div></div>
-            <div class="media-card-body"><div class="media-card-name">asistentský pokoj - rozložení postel</div></div>
+            <div class="media-card-body"><div class="media-card-name">Rozložení postele</div></div>
           </div>
       </div></div>
       <div class="subsection subsection--photo"><div class="subsection-label"><svg viewBox="0 0 12 12" fill="currentColor" style="width:10px;height:10px;flex-shrink:0"><rect x="0.5" y="2" width="11" height="8.5" rx="1.5"/><circle cx="3.5" cy="5.5" r="1.3" fill="rgba(255,255,255,0.9)"/><path d="M0.5 9.5 L3 6.5 L5.5 9 L7.5 7 L11.5 10.5" stroke="rgba(255,255,255,0.85)" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>Fotografie</div><div class="media-grid">
@@ -729,6 +711,46 @@
       </div></div>
     </div>
  
+    <div class="section-block" id="sec-technicka">
+      <div class="section-title"><div class="section-icon-badge">🔧</div><div><h2>Technická místnost</h2><p>Pračka, vysavač, úklid a přípravky</p></div></div>
+      <div class="subsection subsection--video"><div class="subsection-label"><svg viewBox="0 0 12 12" fill="currentColor" style="width:9px;height:9px;flex-shrink:0"><path d="M3 2l8 4-8 4V2z"/></svg>Videa</div><div class="media-grid">
+          <div class="media-card">
+            <div class="media-thumb video-preview" style="padding-top:56%;position:relative;" data-videoid="BcQ4hN58Gk8"><img src="https://img.youtube.com/vi/BcQ4hN58Gk8/mqdefault.jpg" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy"/><div class="play-btn-overlay"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.62)"/><path d="M24 18l20 12-20 12V18z" fill="white"/></svg></div></div>
+            <div class="media-card-body"><div class="media-card-name">Pračka a vysavač</div></div>
+          </div>
+      </div></div>
+      <div class="subsection subsection--photo"><div class="subsection-label"><svg viewBox="0 0 12 12" fill="currentColor" style="width:10px;height:10px;flex-shrink:0"><rect x="0.5" y="2" width="11" height="8.5" rx="1.5"/><circle cx="3.5" cy="5.5" r="1.3" fill="rgba(255,255,255,0.9)"/><path d="M0.5 9.5 L3 6.5 L5.5 9 L7.5 7 L11.5 10.5" stroke="rgba(255,255,255,0.85)" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>Fotografie</div><div class="media-grid">
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/technick%C3%A1%20m%C3%ADstnost%20-%20mop.webp" alt="mop" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">mop</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/technick%C3%A1%20m%C3%ADstnost%20-%20vysava%C4%8D.webp" alt="vysavač" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">vysavač</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/technick%C3%A1%20m%C3%ADstnost%20sk%C5%99%C3%ADn%20na%20p%C5%99%C3%ADpravky%20%C4%8Di%C5%A1t%C4%9Bn%C3%AD.webp" alt="skříň na přípravky čištění" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">skříň na přípravky čištění</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/technick%C3%A1%20m%C3%ADstost%20-%20pra%C4%8Dka%20asistent%20v%C4%9Bci.webp" alt="pračka asistent věci" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">pračka asistent věci</div></div>
+          </div>
+      </div></div>
+    </div>
+
   </main>
  
   <footer style="text-align:center;padding:2rem 1rem;font-size:0.75rem;color:#888;border-top:1px solid var(--gray-mid);background:var(--white);margin-top:2rem;">
