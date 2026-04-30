@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Franz – Průvodce pro asistenta</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&family=Nunito+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange: #E8521A; --orange-light: #F47A4A; --orange-pale: #FDF0EB;
+    --orange-dark: #B83D0E; --gray-bg: #F8F7F5; --gray-mid: #E8E6E1;
+    --gray-text: #6B6860; --text: #2C2A27; --white: #FFFFFF;
+    --radius: 12px; --radius-sm: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Nunito Sans", sans-serif; background: var(--gray-bg); color: var(--text); min-height: 100vh; }
+  #login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--white); padding: 2rem; }
+  .login-box { background: var(--white); border: 1px solid var(--gray-mid); border-radius: var(--radius); padding: 2.5rem 2rem; max-width: 380px; width: 100%; text-align: center; }
+  .login-logo { width: 56px; height: 56px; background: var(--orange); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; }
+  .login-logo svg { width: 28px; height: 28px; fill: white; }
+  .login-box h1 { font-family: "Nunito", sans-serif; font-size: 1.5rem; font-weight: 700; margin-bottom: 0.3rem; }
+  .login-box p { font-size: 0.875rem; color: var(--gray-text); margin-bottom: 1.75rem; }
+  .login-box input[type="password"] { width: 100%; padding: 0.75rem 1rem; border: 1.5px solid var(--gray-mid); border-radius: var(--radius-sm); font-size: 1rem; font-family: inherit; outline: none; transition: border-color 0.2s; margin-bottom: 0.75rem; }
+  .login-box input[type="password"]:focus { border-color: var(--orange); }
+  .login-btn { width: 100%; background: var(--orange); color: white; border: none; border-radius: var(--radius-sm); padding: 0.75rem 1rem; font-size: 1rem; font-family: "Nunito", sans-serif; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+  .login-btn:hover { background: var(--orange-dark); }
+  .login-error { margin-top: 0.75rem; color: #C0392B; font-size: 0.85rem; display: none; }
+  .login-footer { margin-top: 2rem; font-size: 0.75rem; color: var(--gray-text); }
+  #app { display: none; }
+  .site-header { background: var(--white); border-bottom: 1px solid var(--gray-mid); position: sticky; top: 0; z-index: 100; }
+  .header-inner { max-width: 960px; margin: 0 auto; padding: 0 1.5rem; height: 64px; display: flex; align-items: center; justify-content: space-between; }
+  .header-brand { display: flex; align-items: center; gap: 10px; }
+  .header-dot { width: 36px; height: 36px; background: var(--orange); border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .header-dot svg { width: 18px; height: 18px; fill: white; }
+  .header-brand-text h1 { font-family: "Nunito", sans-serif; font-size: 1rem; font-weight: 700; line-height: 1.2; }
+  .header-brand-text span { font-size: 0.75rem; color: var(--gray-text); }
+  .logout-btn { background: none; border: 1px solid var(--gray-mid); color: var(--gray-text); border-radius: var(--radius-sm); padding: 0.4rem 0.75rem; font-size: 0.8rem; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+  .logout-btn:hover { border-color: var(--orange); color: var(--orange); }
+  .hero { background: var(--white); border-bottom: 1px solid var(--gray-mid); padding: 2.5rem 1.5rem; text-align: center; }
+  .hero-inner { max-width: 640px; margin: 0 auto; }
+  .hero h2 { font-family: "Nunito", sans-serif; font-size: 1.75rem; font-weight: 700; margin-bottom: 0.75rem; }
+  .hero h2 span { color: var(--orange); }
+  .hero p { font-size: 1rem; color: var(--gray-text); line-height: 1.7; max-width: 520px; margin: 0 auto; }
+  .section-nav { background: var(--white); border-bottom: 2px solid var(--gray-mid); overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .section-nav-inner { max-width: 960px; margin: 0 auto; padding: 0 1.5rem; display: flex; white-space: nowrap; }
+  .nav-btn { background: none; border: none; border-bottom: 3px solid transparent; padding: 0.85rem 1.1rem; font-size: 0.85rem; font-family: "Nunito", sans-serif; font-weight: 600; color: var(--gray-text); cursor: pointer; transition: all 0.15s; white-space: nowrap; display: flex; align-items: center; gap: 6px; }
+  .nav-btn:hover { color: var(--orange); }
+  .nav-btn.active { color: var(--orange); border-bottom-color: var(--orange); }
+  .main-content { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem; }
+  .section-block { display: none; }
+  .section-block.active { display: block; }
+  .section-title { display: flex; align-items: center; gap: 10px; margin-bottom: 1.5rem; }
+  .section-icon-badge { width: 40px; height: 40px; background: var(--orange-pale); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+  .section-title h2 { font-family: "Nunito", sans-serif; font-size: 1.3rem; font-weight: 700; }
+  .section-title p { font-size: 0.8rem; color: var(--gray-text); }
+  .subsection { margin-bottom: 2.5rem; }
+  .subsection-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--orange); margin-bottom: 1rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--orange-pale); }
+  .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+  .media-card { background: var(--white); border: 1px solid var(--gray-mid); border-radius: var(--radius); overflow: hidden; transition: border-color 0.2s, transform 0.15s; }
+  .media-card:hover { border-color: var(--orange-light); transform: translateY(-2px); }
+  .media-thumb { width: 100%; padding-top: 66%; background: var(--orange-pale); position: relative; }
+  .media-thumb-inner { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
+  .thumb-icon { width: 36px; height: 36px; background: var(--orange); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+  .thumb-icon svg { width: 16px; height: 16px; fill: white; }
+  .thumb-type { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--orange-dark); background: var(--white); padding: 2px 8px; border-radius: 20px; border: 1px solid var(--orange-light); }
+  .media-card-body { padding: 0.6rem 0.75rem; }
+  .media-card-name { font-size: 0.78rem; font-weight: 600; color: var(--text); line-height: 1.4; word-break: break-word; }
+  .video-thumb { background: linear-gradient(135deg, #2C2A27 0%, #444441 100%); }
+  .video-thumb .thumb-type { background: rgba(255,255,255,0.15); color: #FDE8DC; border-color: rgba(255,255,255,0.2); }
+  .info-box { background: var(--orange-pale); border: 1px solid #F5C9B3; border-left: 4px solid var(--orange); border-radius: var(--radius-sm); padding: 1rem 1.25rem; margin-bottom: 1.5rem; font-size: 0.875rem; color: var(--orange-dark); line-height: 1.6; }
+  .info-box strong { font-weight: 600; }
+  @media (max-width: 600px) {
+    .hero h2 { font-size: 1.35rem; }
+    .media-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0.75rem; }
+    .nav-btn { padding: 0.75rem 0.85rem; font-size: 0.8rem; }
+    .main-content { padding: 1.5rem 1rem; }
+    .header-inner { padding: 0 1rem; }
+    .hero { padding: 1.75rem 1rem; }
+  }
+  @media (max-width: 400px) {
+    .media-grid { grid-template-columns: 1fr 1fr; }
+    .media-card-name { font-size: 0.72rem; }
+  }
+  .media-card { cursor: pointer; }
+  /* LIGHTBOX */
+  #lightbox { display:none; position:fixed; inset:0; z-index:1000; background:rgba(0,0,0,0.92); flex-direction:column; align-items:center; justify-content:center; }
+  #lightbox.open { display:flex; }
+  #lb-img-wrap { position:relative; max-width:92vw; max-height:80vh; display:flex; align-items:center; justify-content:center; }
+  #lb-img { max-width:92vw; max-height:80vh; object-fit:contain; border-radius:8px; transition:transform 0.25s; }
+  #lb-caption { color:#fff; font-size:0.85rem; margin-top:1rem; text-align:center; opacity:0.8; max-width:80vw; }
+  #lb-counter { color:#fff; font-size:0.75rem; opacity:0.5; margin-top:0.3rem; }
+  .lb-btn { position:fixed; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.12); border:none; color:#fff; font-size:1.8rem; width:48px; height:64px; cursor:pointer; border-radius:8px; display:flex; align-items:center; justify-content:center; transition:background 0.15s; }
+  .lb-btn:hover { background:rgba(255,255,255,0.25); }
+  #lb-prev { left:12px; }
+  #lb-next { right:12px; }
+  #lb-close { position:fixed; top:16px; right:16px; background:rgba(255,255,255,0.12); border:none; color:#fff; font-size:1.4rem; width:40px; height:40px; cursor:pointer; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+  #lb-close:hover { background:rgba(255,255,255,0.25); }
+  #lb-rotate { position:fixed; top:16px; right:68px; background:rgba(255,255,255,0.12); border:none; color:#fff; font-size:1.1rem; width:40px; height:40px; cursor:pointer; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+  #lb-rotate:hover { background:rgba(255,255,255,0.25); }
+  @media (max-width:600px) { .lb-btn { width:36px; height:52px; font-size:1.3rem; } #lb-prev { left:4px; } #lb-next { right:4px; } }
+</style>
+</head>
+<body>
+ 
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">
+      <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 3.54 2.29 6.53 5.47 7.59L12 22l1.53-5.41C16.71 15.53 19 12.54 19 9c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg>
+    </div>
+    <h1>Průvodce pro asistenta</h1>
+    <p>Péče o Franze – instrukce a pokyny<br>pro asistenty Asistence o.p.s.</p>
+    <input type="password" id="pw-input" placeholder="Zadejte heslo" autocomplete="current-password" />
+    <button class="login-btn" onclick="tryLogin()">Vstoupit</button>
+    <div class="login-error" id="login-error">Nesprávné heslo. Zkuste to znovu.</div>
+    <div class="login-footer">asistence.org · Tato stránka je chráněna heslem</div>
+  </div>
+</div>
+ 
+<div id="app">
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-brand">
+        <div class="header-dot">
+          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 3.54 2.29 6.53 5.47 7.59L12 22l1.53-5.41C16.71 15.53 19 12.54 19 9c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg>
+        </div>
+        <div class="header-brand-text">
+          <h1>Franz – Průvodce asistenta</h1>
+          <span>Asistence o.p.s.</span>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="logout()">Odhlásit</button>
+    </div>
+  </header>
+ 
+  <div class="hero">
+    <div class="hero-inner">
+      <h2>Vítejte v průvodci péče o <span>Franze</span></h2>
+      <p>Tento průvodce obsahuje instrukce, fotografie a videa pro asistenty pečující o Franze. Vyberte sekci v navigaci níže.</p>
+    </div>
+  </div>
+ 
+  <nav class="section-nav">
+    <div class="section-nav-inner">
+      <button class="nav-btn active" onclick="showSection('satna',this)">🚪 Šatna</button>
+      <button class="nav-btn" onclick="showSection('kuchyn',this)">🍳 Kuchyň</button>
+      <button class="nav-btn" onclick="showSection('obyvak',this)">🛋️ Obývák</button>
+      <button class="nav-btn" onclick="showSection('franzpokoj',this)">🛏️ Franz pokoj</button>
+      <button class="nav-btn" onclick="showSection('asistent',this)">👤 Asistentský pokoj</button>
+    </div>
+  </nav>
+ 
+  <main class="main-content">
+ 
+    <div class="section-block active" id="sec-satna">
+      <div class="section-title"><div class="section-icon-badge">🚪</div><div><h2>Šatna</h2><p>Instrukce pro šatnu</p></div></div>
+      <div class="subsection"><div class="subsection-label">Fotografie</div><div class="media-grid">
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/%C5%A1atna%20asistent.webp" alt="šatna asistent" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">šatna asistent</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/wc%20a%20umyvadlo%20asistent%20%C5%A1atna.webp" alt="wc a umyvadlo asistent šatna" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">wc a umyvadlo asistent šatna</div></div>
+          </div>
+      </div></div>
+    </div>
+ 
+    <div class="section-block" id="sec-kuchyn">
+      <div class="section-title"><div class="section-icon-badge">🍳</div><div><h2>Kuchyň</h2><p>Spotřebiče, zásuvky, potraviny a postupy</p></div></div>
+      <div class="info-box"><strong>Důležité:</strong> Používejte pouze označené spotřebiče a postupy popsané v materiálech níže.</div>
+      <div class="subsection"><div class="subsection-label">Videa</div><div class="media-grid">
+          <div class="media-card">
+            <div class="media-thumb video-thumb"><div class="media-thumb-inner"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><span class="thumb-type">Video</span></div></div>
+            <div class="media-card-body"><div class="media-card-name">kuchyň – lednice</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb video-thumb"><div class="media-thumb-inner"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><span class="thumb-type">Video</span></div></div>
+            <div class="media-card-body"><div class="media-card-name">kuchyň – komoda s doklady a přehled lék</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb video-thumb"><div class="media-thumb-inner"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><span class="thumb-type">Video</span></div></div>
+            <div class="media-card-body"><div class="media-card-name">kuchyň – myčka</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb video-thumb"><div class="media-thumb-inner"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><span class="thumb-type">Video</span></div></div>
+            <div class="media-card-body"><div class="media-card-name">kuchyň – vaření čaje</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb video-thumb"><div class="media-thumb-inner"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><span class="thumb-type">Video</span></div></div>
+            <div class="media-card-body"><div class="media-card-name">kuchyň – zásuvka chleba a pečivo</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb video-thumb"><div class="media-thumb-inner"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><span class="thumb-type">Video</span></div></div>
+            <div class="media-card-body"><div class="media-card-name">kuchyň -mikrovlnka</div></div>
+          </div>
+      </div></div>
+      <div class="subsection"><div class="subsection-label">Fotografie</div><div class="media-grid">
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/k%C3%A1vovar%20na%20kapsle%20a%20%C4%8Daj.webp" alt="kávovar na kapsle a čaj" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">kávovar na kapsle a čaj</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/kuchy%C5%88%20le%C5%A1t%C3%ADc%C3%AD%20ut%C4%9Brka%20na%20lednici%20-%20only.webp" alt="kuchyň leštící utěrka na lednici - only" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">kuchyň leštící utěrka na lednici - only</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/kuchy%C5%88%20my%C4%8Dka%20z%C3%A1suvka%20na%20odpadky%20a%20ru%C4%8Dn%C3%ADky%20na%20myt%C3%AD.webp" alt="kuchyň myčka zásuvka na odpadky a ručníky na mytí" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">kuchyň myčka zásuvka na odpadky a ručníky na mytí</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/kuchy%C5%88%20n%C3%A1dob%C3%AD%20sk%C5%99%C3%AD%C5%88ka..webp" alt="kuchyň nádobí skříňka" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">kuchyň nádobí skříňka</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/kuchy%C5%88%20sk%C5%99%C3%AD%C5%88%20na%20%C4%8Daj%20a%20kapsle%20kafe%20zoom.webp" alt="kuchyň skříň na čaj a kapsle kafe zoom" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">kuchyň skříň na čaj a kapsle kafe zoom</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/kuchy%C5%88%20sk%C5%99%C3%AD%C5%88%20na%20%C4%8Daj%20a%20kapsle%20kafe.webp" alt="kuchyň skříň na čaj a kapsle kafe" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">kuchyň skříň na čaj a kapsle kafe</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/kuchy%C5%88%20ut%C4%9Brka%20na%20kv%C4%9Btiny%20-%20only.webp" alt="kuchyň utěrka na květiny - only" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">kuchyň utěrka na květiny - only</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/kuchy%C5%88%20voda%20sirup%20.webp" alt="kuchyň voda sirup" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">kuchyň voda sirup</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/kuchy%C5%88%20vyle%C5%A1t%C4%9Bn%C3%BD%20povrch%20lednice%20-%20zrcadlo%20pro%20kontrolu.webp" alt="kuchyň vyleštěný povrch lednice - zrcadlo pro kontrolu" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">kuchyň vyleštěný povrch lednice - zrcadlo pro kontrolu</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/kuchy%C5%88%20z%C3%A1suvka%20_%20voda.webp" alt="kuchyň zásuvka _ voda" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">kuchyň zásuvka _ voda</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/kuchy%C5%88%20z%C3%A1suvka%20detail%20.webp" alt="kuchyň zásuvka detail" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">kuchyň zásuvka detail</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/kuchy%C5%88%20z%C3%A1suvka%20chleba%20a%20ovoce.webp" alt="kuchyň zásuvka chleba a ovoce" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">kuchyň zásuvka chleba a ovoce</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/kuchy%C5%88%20z%C3%A1suvka%20na%20tablety%20do%20my%C4%8Dky%20-%20ut%C4%9Brky%20na%20povrch.webp" alt="kuchyň zásuvka na tablety do myčky - utěrky na povrch" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">kuchyň zásuvka na tablety do myčky - utěrky na povrch</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/kuchy%C5%88%20z%C3%A1suvka%20no%C5%BEe.webp" alt="kuchyň zásuvka nože" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">kuchyň zásuvka nože</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/kuchy%C5%88%20z%C3%A1suvka%20ovoce.webp" alt="kuchyň zásuvka ovoce" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">kuchyň zásuvka ovoce</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/mikrovln%C3%A1%20trouba.webp" alt="mikrovlná trouba" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">mikrovlná trouba</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/ovl%C3%A1d%C3%A1n%C3%AD%20mikrovln%C3%A1%20trouba.webp" alt="ovládání mikrovlná trouba" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">ovládání mikrovlná trouba</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/pol%C3%A9vkov%C3%A1%20m%C3%ADsa.webp" alt="polévková mísa" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">polévková mísa</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/varn%C3%A1%20deska.webp" alt="varná deska" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">varná deska</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/ve%C4%8Der%20-%20porce%20polovina%20sta%C4%8D%C3%AD.webp" alt="večer - porce polovina stačí" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">večer - porce polovina stačí</div></div>
+          </div>
+      </div></div>
+      <div class="subsection"><div class="subsection-label">Zakázané nože</div><div class="media-grid">
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/diamantov%C3%A9%20no%C5%BEe%20nepou%C5%BE%C3%ADvat.webp" alt="diamantové nože nepoužívat" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">diamantové nože nepoužívat</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/diamantov%C3%A9%20no%C5%BEe%20NO%20GO.webp" alt="diamantové nože NO GO" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">diamantové nože NO GO</div></div>
+          </div>
+      </div></div>
+      <div class="subsection"><div class="subsection-label">Technická místnost</div><div class="media-grid">
+          <div class="media-card">
+            <div class="media-thumb video-thumb"><div class="media-thumb-inner"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><span class="thumb-type">Video</span></div></div>
+            <div class="media-card-body"><div class="media-card-name">technická místnost</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/technick%C3%A1%20m%C3%ADstnost%20-%20mop.webp" alt="technická místnost - mop" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">technická místnost - mop</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/technick%C3%A1%20m%C3%ADstnost%20-%20vysava%C4%8D.webp" alt="technická místnost - vysavač" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">technická místnost - vysavač</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/technick%C3%A1%20m%C3%ADstnost%20sk%C5%99%C3%AD%C5%88%20na%20p%C5%99%C3%ADpravky%20%C4%8Di%C5%A1t%C4%9Bn%C3%AD.webp" alt="technická místnost skříň na přípravky čištění" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">technická místnost skříň na přípravky čištění</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/technick%C3%A1%20m%C3%ADstost%20-%20pra%C4%8Dka%20asistent%20v%C4%9Bci.webp" alt="technická místost - pračka asistent věci" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">technická místost - pračka asistent věci</div></div>
+          </div>
+      </div></div>
+    </div>
+ 
+    <div class="section-block" id="sec-obyvak">
+      <div class="section-title"><div class="section-icon-badge">🛋️</div><div><h2>Obývák</h2><p>Instrukce pro obývací pokoj</p></div></div>
+      <div class="subsection"><div class="subsection-label">Videa</div><div class="media-grid">
+          <div class="media-card">
+            <div class="media-thumb video-thumb"><div class="media-thumb-inner"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><span class="thumb-type">Video</span></div></div>
+            <div class="media-card-body"><div class="media-card-name">obývák - dveře bakon brzda</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb video-thumb"><div class="media-thumb-inner"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><span class="thumb-type">Video</span></div></div>
+            <div class="media-card-body"><div class="media-card-name">obývák - japonské záclony</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb video-thumb"><div class="media-thumb-inner"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><span class="thumb-type">Video</span></div></div>
+            <div class="media-card-body"><div class="media-card-name">obývák .- markýza</div></div>
+          </div>
+      </div></div>
+      <div class="subsection"><div class="subsection-label">Fotografie</div><div class="media-grid">
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/dve%C5%99e%20ob%C3%BDv%C3%A1k%20na%20noc%20zav%C5%99eno.webp" alt="dveře obývák na noc zavřeno" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">dveře obývák na noc zavřeno</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/dve%C5%99e%20ob%C3%BDv%C3%A1k%20r%C3%A1no%20otev%C5%99eno.webp" alt="dveře obývák ráno otevřeno" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">dveře obývák ráno otevřeno</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/francouzsk%C3%A9%20z%C3%A1clony%20balkon.webp" alt="francouzské záclony balkon" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">francouzské záclony balkon</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/japonsk%C3%A9%20z%C3%A1clony%20detail.webp" alt="japonské záclony detail" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">japonské záclony detail</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/ob%C3%BDv%C3%A1k%20-%20detail%20kapesn%C3%ADky%20a%20franz%20k%C5%99eslo.webp" alt="obývák - detail kapesníky a franz křeslo" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">obývák - detail kapesníky a franz křeslo</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/ob%C3%BDv%C3%A1k%20-%20franz%20u%20stolu%20-%20kapesn%C3%ADky%2C%20pe%C4%8Divo%2C%20voda%2C%20l%C3%A9ky%20%C3%BAsm%C4%9Bv.webp" alt="obývák - franz u stolu - kapesníky, pečivo, voda, léky úsměv" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">obývák - franz u stolu - kapesníky, pečivo, voda, léky úsměv</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/ob%C3%BDv%C3%A1k%20-%20franz%20u%20stolu%20-%20kapesn%C3%ADky%2C%20pe%C4%8Divo%2C%20voda%2C%20l%C3%A9ky.webp" alt="obývák - franz u stolu - kapesníky, pečivo, voda, léky" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">obývák - franz u stolu - kapesníky, pečivo, voda, léky</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/ovlada%C4%8D%20mark%C3%BDza.webp" alt="ovladač markýza" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">ovladač markýza</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/k%C5%99eslo%20franz.webp" alt="křeslo franz" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">křeslo franz</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/perlov%C3%A1%20komoda%20-%20nic%20nepokl%C3%A1dat.webp" alt="perlová komoda - nic nepokládat" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">perlová komoda - nic nepokládat</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/perlov%C3%A1%20komoda%20-%20prvn%C3%AD%20z%C3%A1suvka%20-%20j%C3%ADdeln%C3%AD%C4%8Dek.webp" alt="perlová komoda - první zásuvka - jídelníček" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">perlová komoda - první zásuvka - jídelníček</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/perlov%C3%A1%20taburetka%20-%20nesedat%20nepokl%C3%A1dat.webp" alt="perlová taburetka - nesedat nepokládat" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">perlová taburetka - nesedat nepokládat</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/zar%C3%A1%C5%BEka%20dve%C5%99%C3%AD%20na%20balkon%20detail.webp" alt="zarážka dveří na balkon detail" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">zarážka dveří na balkon detail</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/zar%C3%A1%C5%BEka%20dve%C5%99%C3%AD%20na%20balkon.webp" alt="zarážka dveří na balkon" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">zarážka dveří na balkon</div></div>
+          </div>
+      </div></div>
+    </div>
+ 
+    <div class="section-block" id="sec-franzpokoj">
+      <div class="section-title"><div class="section-icon-badge">🛏️</div><div><h2>Franz pokoj &amp; koupelna</h2><p>Pokoj, postel, koupelna a hygienické postupy</p></div></div>
+      <div class="subsection"><div class="subsection-label">Videa – pokoj</div><div class="media-grid">
+          <div class="media-card">
+            <div class="media-thumb video-thumb"><div class="media-thumb-inner"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><span class="thumb-type">Video</span></div></div>
+            <div class="media-card-body"><div class="media-card-name">franz pokoj - ovládání postele</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb video-thumb"><div class="media-thumb-inner"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><span class="thumb-type">Video</span></div></div>
+            <div class="media-card-body"><div class="media-card-name">franz pokoj - ovládání žaluzií</div></div>
+          </div>
+      </div></div>
+      <div class="subsection"><div class="subsection-label">Videa – koupelna</div><div class="media-grid">
+          <div class="media-card">
+            <div class="media-thumb video-thumb"><div class="media-thumb-inner"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><span class="thumb-type">Video</span></div></div>
+            <div class="media-card-body"><div class="media-card-name">franz koupelna - holení</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb video-thumb"><div class="media-thumb-inner"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><span class="thumb-type">Video</span></div></div>
+            <div class="media-card-body"><div class="media-card-name">franz koupelna - koupání</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb video-thumb"><div class="media-thumb-inner"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><span class="thumb-type">Video</span></div></div>
+            <div class="media-card-body"><div class="media-card-name">koupelna - pudr vůně lékarnička</div></div>
+          </div>
+      </div></div>
+      <div class="subsection"><div class="subsection-label">Fotografie – pokoj</div><div class="media-grid">
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/franz%20pokoj%20-%20dopomoc%20do%20postele.webp" alt="franz pokoj - dopomoc do postele" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">franz pokoj - dopomoc do postele</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/franz%20pokoj%20-%20chod%C3%ADtko%20na%20doma.webp" alt="franz pokoj - chodítko na doma" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">franz pokoj - chodítko na doma</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/franz%20pokoj%20-%20chod%C3%ADtko.webp" alt="franz pokoj - chodítko" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">franz pokoj - chodítko</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/franz%20pokoj%20-%20kamera%20audio%20video.webp" alt="franz pokoj - kamera audio video" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">franz pokoj - kamera audio video</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/franz%20pokoj%20-%20ovlada%C4%8D%20postele.webp" alt="franz pokoj - ovladač postele" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">franz pokoj - ovladač postele</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/franz%20pokoj%20-%20p%C5%99ipraven%C3%A1%20postel.webp" alt="franz pokoj - připravená postel" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">franz pokoj - připravená postel</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/franz%20pokoj.webp" alt="franz pokoj" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">franz pokoj</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/franc%20pokoj%2C%20ru%C4%8Dn%C3%ADky%20a%20lo%C5%BEn%C3%AD%20pr%C3%A1dlo%20-%20pod%20gramofonem.webp" alt="franc pokoj, ručníky a ložní prádlo - pod gramofonem" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">franc pokoj, ručníky a ložní prádlo - pod gramofonem</div></div>
+          </div>
+      </div></div>
+      <div class="subsection"><div class="subsection-label">Fotografie – koupelna</div><div class="media-grid">
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/franz%20koupelan%20-%20toaleta%20s%20bidetem.webp" alt="franz koupelan - toaleta s bidetem" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">franz koupelan - toaleta s bidetem</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/franz%20koupelna%20-%20chod%C3%ADtko%20zaparkovan%C3%A9.webp" alt="franz koupelna - chodítko zaparkované" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">franz koupelna - chodítko zaparkované</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/franz%20koupelna%20-%20s%C3%A1%C4%8Dky%20na%20pleny%20a%20dal%C5%A1%C3%AD%20propriety%20z%C3%A1suvka.webp" alt="franz koupelna - sáčky na pleny a další propriety zásuvka" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">franz koupelna - sáčky na pleny a další propriety zásuvka</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/franz%20koupelna%20-%20speci%C3%A1ln%C3%AD%20gel%20na%20mod%C5%99iny%20-%20thajsko.webp" alt="franz koupelna - speciální gel na modřiny - thajsko" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">franz koupelna - speciální gel na modřiny - thajsko</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/franz%20koupelna%20-%20voz%C3%ADk%20do%20sprchy.webp" alt="franz koupelna - vozík do sprchy" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">franz koupelna - vozík do sprchy</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/franz%20koupelna%20-%20%C5%BEiletky%2C%20ru%C4%8Dn%C3%ADky.webp" alt="franz koupelna - žiletky, ručníky" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">franz koupelna - žiletky, ručníky</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/franz%20koupelna%20pozice%20p%C5%99i%20holen%C3%AD%20a%20%C4%8Di%C5%A1t%C4%9Bn%C3%AD%20zub%C5%AF.webp" alt="franz koupelna pozice při holení a čištění zubů" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">franz koupelna pozice při holení a čištění zubů</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/franz%20koupelna%20toaletn%C3%AD%20pap%C3%ADr%20-%20sk%C5%99%C3%AD%C5%88ka%20zrcadlo.webp" alt="franz koupelna toaletní papír - skříňka zrcadlo" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">franz koupelna toaletní papír - skříňka zrcadlo</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/koupelna%20pan%C3%AD%20dom%C3%A1c%C3%AD%20-%20nevstupovat.webp" alt="koupelna paní domácí - nevstupovat" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">koupelna paní domácí - nevstupovat</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/pokoj%20a%20koupelna%20pan%C3%AD%20dom%C3%A1c%C3%AD%20-%20nevstupovat.webp" alt="pokoj a koupelna paní domácí - nevstupovat" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">pokoj a koupelna paní domácí - nevstupovat</div></div>
+          </div>
+      </div></div>
+    </div>
+ 
+    <div class="section-block" id="sec-asistent">
+      <div class="section-title"><div class="section-icon-badge">👤</div><div><h2>Asistentský pokoj</h2><p>Zázemí a vybavení pro asistenta</p></div></div>
+      <div class="subsection"><div class="subsection-label">Videa</div><div class="media-grid">
+          <div class="media-card">
+            <div class="media-thumb video-thumb"><div class="media-thumb-inner"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><span class="thumb-type">Video</span></div></div>
+            <div class="media-card-body"><div class="media-card-name">asistentský pokoj - rozložení postel</div></div>
+          </div>
+      </div></div>
+      <div class="subsection"><div class="subsection-label">Fotografie</div><div class="media-grid">
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/asistentsk%C3%BD%20pokoj%20-%20ovl%C3%A1d%C3%A1n%C3%AD%20LED%20sv%C4%9Btel%20-%20tla%C4%8D%C3%ADtko.webp" alt="asistentský pokoj - ovládání LED světel - tlačítko" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">asistentský pokoj - ovládání LED světel - tlačítko</div></div>
+          </div>
+          <div class="media-card">
+            <div class="media-thumb" style="padding-top:66%;position:relative;background:#f5ede8;">
+              <img src="https://aid4gold.github.io/franz-/asistentsk%C3%BD%20pokoj%20-%20ch%C5%AFvi%C4%8Dka.webp" alt="asistentský pokoj - chůvička" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+              <div class="media-thumb-inner" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;"><div class="thumb-icon"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div><span class="thumb-type">Foto</span></div>
+            </div>
+            <div class="media-card-body"><div class="media-card-name">asistentský pokoj - chůvička</div></div>
+          </div>
+      </div></div>
+    </div>
+ 
+  </main>
+ 
+  <footer style="text-align:center;padding:2rem 1rem;font-size:0.75rem;color:#888;border-top:1px solid var(--gray-mid);background:var(--white);margin-top:2rem;">
+    Asistence o.p.s. · <a href="https://asistence.org" style="color:var(--orange);text-decoration:none;">asistence.org</a> · Interní materiály – pouze pro oprávněné asistenty
+  </footer>
+</div>
+ 
+<script>
+  const PASSWORD = "asistent2024";
+  function tryLogin() {
+    if (document.getElementById("pw-input").value === PASSWORD) {
+      document.getElementById("login-screen").style.display = "none";
+      document.getElementById("app").style.display = "block";
+    } else {
+      document.getElementById("login-error").style.display = "block";
+    }
+  }
+  document.getElementById("pw-input").addEventListener("keydown", e => { if (e.key === "Enter") tryLogin(); });
+  function logout() {
+    document.getElementById("app").style.display = "none";
+    document.getElementById("login-screen").style.display = "flex";
+    document.getElementById("pw-input").value = "";
+    document.getElementById("login-error").style.display = "none";
+  }
+  function showSection(id, btn) {
+    document.querySelectorAll(".section-block").forEach(s => s.classList.remove("active"));
+    document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+    document.getElementById("sec-" + id).classList.add("active");
+    btn.classList.add("active");
+  }
+ 
+  // LIGHTBOX
+  let lbImages = [];
+  let lbIndex = 0;
+  let lbRotation = {};
+ 
+  function lbOpen(imgEl) {
+    // Collect all photo images in the current active section
+    const activeSection = document.querySelector(".section-block.active");
+    lbImages = Array.from(activeSection.querySelectorAll("img"));
+    lbIndex = lbImages.indexOf(imgEl);
+    if (lbIndex === -1) { lbIndex = 0; lbImages = [imgEl]; }
+    lbShow();
+    document.getElementById("lightbox").classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+ 
+  function lbShow() {
+    const img = lbImages[lbIndex];
+    const lbImg = document.getElementById("lb-img");
+    lbImg.src = img.src;
+    lbImg.alt = img.alt;
+    const rot = lbRotation[img.src] || 0;
+    lbImg.style.transform = "rotate(" + rot + "deg)";
+    // Swap max dimensions if rotated 90/270
+    if (rot === 90 || rot === 270) {
+      lbImg.style.maxWidth = "80vh";
+      lbImg.style.maxHeight = "92vw";
+    } else {
+      lbImg.style.maxWidth = "92vw";
+      lbImg.style.maxHeight = "80vh";
+    }
+    document.getElementById("lb-caption").textContent = img.alt;
+    document.getElementById("lb-counter").textContent = (lbIndex + 1) + " / " + lbImages.length;
+  }
+ 
+  function lbNav(dir) {
+    lbIndex = (lbIndex + dir + lbImages.length) % lbImages.length;
+    lbShow();
+  }
+ 
+  function lbRotate() {
+    const src = lbImages[lbIndex].src;
+    lbRotation[src] = ((lbRotation[src] || 0) + 90) % 360;
+    lbShow();
+  }
+ 
+  function lbClose() {
+    document.getElementById("lightbox").classList.remove("open");
+    document.body.style.overflow = "";
+  }
+ 
+  document.addEventListener("keydown", e => {
+    if (!document.getElementById("lightbox").classList.contains("open")) return;
+    if (e.key === "ArrowRight") lbNav(1);
+    else if (e.key === "ArrowLeft") lbNav(-1);
+    else if (e.key === "Escape") lbClose();
+    else if (e.key === "r" || e.key === "R") lbRotate();
+  });
+ 
+  document.getElementById("lightbox").addEventListener("click", e => {
+    if (e.target === document.getElementById("lightbox")) lbClose();
+  });
+ 
+  // Attach click handlers to all photo cards after page load
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".media-card img").forEach(img => {
+      img.parentElement.parentElement.addEventListener("click", () => lbOpen(img));
+    });
+  });
+</script>
+ 
+<div id="lightbox">
+  <button id="lb-close" onclick="lbClose()" title="Zavřít">✕</button>
+  <button id="lb-rotate" onclick="lbRotate()" title="Otočit (R)">↻</button>
+  <button class="lb-btn" id="lb-prev" onclick="lbNav(-1)">&#8249;</button>
+  <div id="lb-img-wrap">
+    <img id="lb-img" src="" alt="" />
+  </div>
+  <button class="lb-btn" id="lb-next" onclick="lbNav(1)">&#8250;</button>
+  <div id="lb-caption"></div>
+  <div id="lb-counter"></div>
+</div>
+</body>
+</html>
