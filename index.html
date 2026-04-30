@@ -85,7 +85,7 @@
   /* LIGHTBOX */
   #lightbox { display:none; position:fixed; inset:0; z-index:1000; background:rgba(0,0,0,0.92); flex-direction:column; align-items:center; justify-content:center; }
   #lightbox.open { display:flex; }
-  #lb-img-wrap { position:relative; max-width:92vw; max-height:80vh; display:flex; align-items:center; justify-content:center; }
+  #lb-img-wrap { position:relative; display:flex; align-items:center; justify-content:center; }
   #lb-img { max-width:92vw; max-height:80vh; object-fit:contain; border-radius:8px; transition:transform 0.25s; }
   #lb-caption { color:#fff; font-size:0.85rem; margin-top:1rem; text-align:center; opacity:0.8; max-width:80vw; }
   #lb-counter { color:#fff; font-size:0.75rem; opacity:0.5; margin-top:0.3rem; }
@@ -98,6 +98,12 @@
   #lb-rotate { position:fixed; top:16px; right:68px; background:rgba(255,255,255,0.12); border:none; color:#fff; font-size:1.1rem; width:40px; height:40px; cursor:pointer; border-radius:50%; display:flex; align-items:center; justify-content:center; }
   #lb-rotate:hover { background:rgba(255,255,255,0.25); }
   @media (max-width:600px) { .lb-btn { width:36px; height:52px; font-size:1.3rem; } #lb-prev { left:4px; } #lb-next { right:4px; } }
+  .play-btn-overlay { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; border-radius:12px 12px 0 0; background:rgba(0,0,0,0.06); transition:background 0.2s; }
+  .media-card:hover .play-btn-overlay { background:rgba(0,0,0,0.22); }
+  .play-btn-overlay svg { width:52px; height:52px; filter:drop-shadow(0 2px 8px rgba(0,0,0,0.35)); transition:transform 0.15s; }
+  .media-card:hover .play-btn-overlay svg { transform:scale(1.1); }
+  #lb-video-wrap { display:none; }
+  #lb-iframe { width:min(88vw,854px); height:min(49.5vw,480px); border:none; border-radius:8px; }
 </style>
 </head>
 <body>
@@ -176,27 +182,27 @@
       <div class="info-box"><strong>Důležité:</strong> Používejte pouze označené spotřebiče a postupy popsané v materiálech níže.</div>
       <div class="subsection"><div class="subsection-label">Videa</div><div class="media-grid">
           <div class="media-card">
-            <div class="media-thumb" style="padding-top:56%;position:relative;"><iframe src="https://www.youtube.com/embed/fQSRHn8YD5I" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:12px 12px 0 0;" allowfullscreen loading="lazy"></iframe></div>
+            <div class="media-thumb video-preview" style="padding-top:56%;position:relative;" data-videoid="fQSRHn8YD5I"><img src="https://img.youtube.com/vi/fQSRHn8YD5I/mqdefault.jpg" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy"/><div class="play-btn-overlay"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.62)"/><path d="M24 18l20 12-20 12V18z" fill="white"/></svg></div></div>
             <div class="media-card-body"><div class="media-card-name">kuchyň – lednice</div></div>
           </div>
           <div class="media-card">
-            <div class="media-thumb" style="padding-top:56%;position:relative;"><iframe src="https://www.youtube.com/embed/mmtsS8p41TY" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:12px 12px 0 0;" allowfullscreen loading="lazy"></iframe></div>
+            <div class="media-thumb video-preview" style="padding-top:56%;position:relative;" data-videoid="mmtsS8p41TY"><img src="https://img.youtube.com/vi/mmtsS8p41TY/mqdefault.jpg" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy"/><div class="play-btn-overlay"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.62)"/><path d="M24 18l20 12-20 12V18z" fill="white"/></svg></div></div>
             <div class="media-card-body"><div class="media-card-name">kuchyň – komoda s doklady a přehled lék</div></div>
           </div>
           <div class="media-card">
-            <div class="media-thumb" style="padding-top:56%;position:relative;"><iframe src="https://www.youtube.com/embed/JgsB0VlGY50" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:12px 12px 0 0;" allowfullscreen loading="lazy"></iframe></div>
+            <div class="media-thumb video-preview" style="padding-top:56%;position:relative;" data-videoid="JgsB0VlGY50"><img src="https://img.youtube.com/vi/JgsB0VlGY50/mqdefault.jpg" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy"/><div class="play-btn-overlay"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.62)"/><path d="M24 18l20 12-20 12V18z" fill="white"/></svg></div></div>
             <div class="media-card-body"><div class="media-card-name">kuchyň – myčka</div></div>
           </div>
           <div class="media-card">
-            <div class="media-thumb" style="padding-top:56%;position:relative;"><iframe src="https://www.youtube.com/embed/9p5RviaN3uw" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:12px 12px 0 0;" allowfullscreen loading="lazy"></iframe></div>
+            <div class="media-thumb video-preview" style="padding-top:56%;position:relative;" data-videoid="9p5RviaN3uw"><img src="https://img.youtube.com/vi/9p5RviaN3uw/mqdefault.jpg" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy"/><div class="play-btn-overlay"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.62)"/><path d="M24 18l20 12-20 12V18z" fill="white"/></svg></div></div>
             <div class="media-card-body"><div class="media-card-name">kuchyň – vaření čaje</div></div>
           </div>
           <div class="media-card">
-            <div class="media-thumb" style="padding-top:56%;position:relative;"><iframe src="https://www.youtube.com/embed/q2Rg5rqd7tc" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:12px 12px 0 0;" allowfullscreen loading="lazy"></iframe></div>
+            <div class="media-thumb video-preview" style="padding-top:56%;position:relative;" data-videoid="q2Rg5rqd7tc"><img src="https://img.youtube.com/vi/q2Rg5rqd7tc/mqdefault.jpg" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy"/><div class="play-btn-overlay"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.62)"/><path d="M24 18l20 12-20 12V18z" fill="white"/></svg></div></div>
             <div class="media-card-body"><div class="media-card-name">kuchyň – zásuvka chleba a pečivo</div></div>
           </div>
           <div class="media-card">
-            <div class="media-thumb" style="padding-top:56%;position:relative;"><iframe src="https://www.youtube.com/embed/qO6mZBFZgT0" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:12px 12px 0 0;" allowfullscreen loading="lazy"></iframe></div>
+            <div class="media-thumb video-preview" style="padding-top:56%;position:relative;" data-videoid="qO6mZBFZgT0"><img src="https://img.youtube.com/vi/qO6mZBFZgT0/mqdefault.jpg" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy"/><div class="play-btn-overlay"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.62)"/><path d="M24 18l20 12-20 12V18z" fill="white"/></svg></div></div>
             <div class="media-card-body"><div class="media-card-name">kuchyň -mikrovlnka</div></div>
           </div>
       </div></div>
@@ -360,7 +366,7 @@
       </div></div>
       <div class="subsection"><div class="subsection-label">Technická místnost</div><div class="media-grid">
           <div class="media-card">
-            <div class="media-thumb" style="padding-top:56%;position:relative;"><iframe src="https://www.youtube.com/embed/BcQ4hN58Gk8" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:12px 12px 0 0;" allowfullscreen loading="lazy"></iframe></div>
+            <div class="media-thumb video-preview" style="padding-top:56%;position:relative;" data-videoid="BcQ4hN58Gk8"><img src="https://img.youtube.com/vi/BcQ4hN58Gk8/mqdefault.jpg" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy"/><div class="play-btn-overlay"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.62)"/><path d="M24 18l20 12-20 12V18z" fill="white"/></svg></div></div>
             <div class="media-card-body"><div class="media-card-name">technická místnost</div></div>
           </div>
           <div class="media-card">
@@ -398,15 +404,15 @@
       <div class="section-title"><div class="section-icon-badge">🛋️</div><div><h2>Obývák</h2><p>Instrukce pro obývací pokoj</p></div></div>
       <div class="subsection"><div class="subsection-label">Videa</div><div class="media-grid">
           <div class="media-card">
-            <div class="media-thumb" style="padding-top:56%;position:relative;"><iframe src="https://www.youtube.com/embed/q03vLqIIFck" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:12px 12px 0 0;" allowfullscreen loading="lazy"></iframe></div>
+            <div class="media-thumb video-preview" style="padding-top:56%;position:relative;" data-videoid="q03vLqIIFck"><img src="https://img.youtube.com/vi/q03vLqIIFck/mqdefault.jpg" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy"/><div class="play-btn-overlay"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.62)"/><path d="M24 18l20 12-20 12V18z" fill="white"/></svg></div></div>
             <div class="media-card-body"><div class="media-card-name">obývák - dveře balkon brzda</div></div>
           </div>
           <div class="media-card">
-            <div class="media-thumb" style="padding-top:56%;position:relative;"><iframe src="https://www.youtube.com/embed/zHwH3D8cmWM" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:12px 12px 0 0;" allowfullscreen loading="lazy"></iframe></div>
+            <div class="media-thumb video-preview" style="padding-top:56%;position:relative;" data-videoid="zHwH3D8cmWM"><img src="https://img.youtube.com/vi/zHwH3D8cmWM/mqdefault.jpg" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy"/><div class="play-btn-overlay"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.62)"/><path d="M24 18l20 12-20 12V18z" fill="white"/></svg></div></div>
             <div class="media-card-body"><div class="media-card-name">obývák - japonské záclony</div></div>
           </div>
           <div class="media-card">
-            <div class="media-thumb" style="padding-top:56%;position:relative;"><iframe src="https://www.youtube.com/embed/cTumESiOw0Y" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:12px 12px 0 0;" allowfullscreen loading="lazy"></iframe></div>
+            <div class="media-thumb video-preview" style="padding-top:56%;position:relative;" data-videoid="cTumESiOw0Y"><img src="https://img.youtube.com/vi/cTumESiOw0Y/mqdefault.jpg" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy"/><div class="play-btn-overlay"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.62)"/><path d="M24 18l20 12-20 12V18z" fill="white"/></svg></div></div>
             <div class="media-card-body"><div class="media-card-name">obývák .- markýza</div></div>
           </div>
       </div></div>
@@ -516,25 +522,25 @@
       <div class="section-title"><div class="section-icon-badge">🛏️</div><div><h2>Franz pokoj &amp; koupelna</h2><p>Pokoj, postel, koupelna a hygienické postupy</p></div></div>
       <div class="subsection"><div class="subsection-label">Videa – pokoj</div><div class="media-grid">
           <div class="media-card">
-            <div class="media-thumb" style="padding-top:56%;position:relative;"><iframe src="https://www.youtube.com/embed/d4Dh7GdDoQA" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:12px 12px 0 0;" allowfullscreen loading="lazy"></iframe></div>
+            <div class="media-thumb video-preview" style="padding-top:56%;position:relative;" data-videoid="d4Dh7GdDoQA"><img src="https://img.youtube.com/vi/d4Dh7GdDoQA/mqdefault.jpg" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy"/><div class="play-btn-overlay"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.62)"/><path d="M24 18l20 12-20 12V18z" fill="white"/></svg></div></div>
             <div class="media-card-body"><div class="media-card-name">franz pokoj - ovládání postele</div></div>
           </div>
           <div class="media-card">
-            <div class="media-thumb" style="padding-top:56%;position:relative;"><iframe src="https://www.youtube.com/embed/ezupu84eS6U" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:12px 12px 0 0;" allowfullscreen loading="lazy"></iframe></div>
+            <div class="media-thumb video-preview" style="padding-top:56%;position:relative;" data-videoid="ezupu84eS6U"><img src="https://img.youtube.com/vi/ezupu84eS6U/mqdefault.jpg" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy"/><div class="play-btn-overlay"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.62)"/><path d="M24 18l20 12-20 12V18z" fill="white"/></svg></div></div>
             <div class="media-card-body"><div class="media-card-name">franz pokoj - ovládání žaluzií</div></div>
           </div>
       </div></div>
       <div class="subsection"><div class="subsection-label">Videa – koupelna</div><div class="media-grid">
           <div class="media-card">
-            <div class="media-thumb" style="padding-top:56%;position:relative;"><iframe src="https://www.youtube.com/embed/U7mv6XPxhkk" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:12px 12px 0 0;" allowfullscreen loading="lazy"></iframe></div>
+            <div class="media-thumb video-preview" style="padding-top:56%;position:relative;" data-videoid="U7mv6XPxhkk"><img src="https://img.youtube.com/vi/U7mv6XPxhkk/mqdefault.jpg" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy"/><div class="play-btn-overlay"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.62)"/><path d="M24 18l20 12-20 12V18z" fill="white"/></svg></div></div>
             <div class="media-card-body"><div class="media-card-name">franz koupelna - holení</div></div>
           </div>
           <div class="media-card">
-            <div class="media-thumb" style="padding-top:56%;position:relative;"><iframe src="https://www.youtube.com/embed/1Cuzmgur3F0" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:12px 12px 0 0;" allowfullscreen loading="lazy"></iframe></div>
+            <div class="media-thumb video-preview" style="padding-top:56%;position:relative;" data-videoid="1Cuzmgur3F0"><img src="https://img.youtube.com/vi/1Cuzmgur3F0/mqdefault.jpg" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy"/><div class="play-btn-overlay"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.62)"/><path d="M24 18l20 12-20 12V18z" fill="white"/></svg></div></div>
             <div class="media-card-body"><div class="media-card-name">franz koupelna - koupání</div></div>
           </div>
           <div class="media-card">
-            <div class="media-thumb" style="padding-top:56%;position:relative;"><iframe src="https://www.youtube.com/embed/1WaFDLGRYLQ" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:12px 12px 0 0;" allowfullscreen loading="lazy"></iframe></div>
+            <div class="media-thumb video-preview" style="padding-top:56%;position:relative;" data-videoid="1WaFDLGRYLQ"><img src="https://img.youtube.com/vi/1WaFDLGRYLQ/mqdefault.jpg" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy"/><div class="play-btn-overlay"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.62)"/><path d="M24 18l20 12-20 12V18z" fill="white"/></svg></div></div>
             <div class="media-card-body"><div class="media-card-name">koupelna - pudr vůně lékarnička</div></div>
           </div>
       </div></div>
@@ -674,7 +680,7 @@
       <div class="section-title"><div class="section-icon-badge">👤</div><div><h2>Asistentský pokoj</h2><p>Zázemí a vybavení pro asistenta</p></div></div>
       <div class="subsection"><div class="subsection-label">Videa</div><div class="media-grid">
           <div class="media-card">
-            <div class="media-thumb" style="padding-top:56%;position:relative;"><iframe src="https://www.youtube.com/embed/W4dpe0MLz60" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:12px 12px 0 0;" allowfullscreen loading="lazy"></iframe></div>
+            <div class="media-thumb video-preview" style="padding-top:56%;position:relative;" data-videoid="W4dpe0MLz60"><img src="https://img.youtube.com/vi/W4dpe0MLz60/mqdefault.jpg" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" loading="lazy"/><div class="play-btn-overlay"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="30" fill="rgba(0,0,0,0.62)"/><path d="M24 18l20 12-20 12V18z" fill="white"/></svg></div></div>
             <div class="media-card-body"><div class="media-card-name">asistentský pokoj - rozložení postel</div></div>
           </div>
       </div></div>
@@ -728,56 +734,84 @@
   }
  
   // LIGHTBOX
-  let lbImages = [];
+  let lbItems = [];
   let lbIndex = 0;
   let lbRotation = {};
- 
-  function lbOpen(imgEl) {
-    // Collect all photo images in the current active section
+
+  function lbOpenPhoto(imgEl) {
     const activeSection = document.querySelector(".section-block.active");
-    lbImages = Array.from(activeSection.querySelectorAll("img"));
-    lbIndex = lbImages.indexOf(imgEl);
-    if (lbIndex === -1) { lbIndex = 0; lbImages = [imgEl]; }
+    const imgs = Array.from(activeSection.querySelectorAll(".media-card img"));
+    lbItems = imgs.map(el => ({ type: "photo", el }));
+    lbIndex = imgs.indexOf(imgEl);
+    if (lbIndex === -1) lbIndex = 0;
     lbShow();
     document.getElementById("lightbox").classList.add("open");
     document.body.style.overflow = "hidden";
   }
- 
-  function lbShow() {
-    const img = lbImages[lbIndex];
-    const lbImg = document.getElementById("lb-img");
-    lbImg.src = img.src;
-    lbImg.alt = img.alt;
-    const rot = lbRotation[img.src] || 0;
-    lbImg.style.transform = "rotate(" + rot + "deg)";
-    // Swap max dimensions if rotated 90/270
-    if (rot === 90 || rot === 270) {
-      lbImg.style.maxWidth = "80vh";
-      lbImg.style.maxHeight = "92vw";
-    } else {
-      lbImg.style.maxWidth = "92vw";
-      lbImg.style.maxHeight = "80vh";
-    }
-    document.getElementById("lb-caption").textContent = img.alt;
-    document.getElementById("lb-counter").textContent = (lbIndex + 1) + " / " + lbImages.length;
+
+  function lbOpenVideo(thumbEl) {
+    const activeSection = document.querySelector(".section-block.active");
+    const thumbs = Array.from(activeSection.querySelectorAll(".video-preview"));
+    lbItems = thumbs.map(el => ({
+      type: "video",
+      id: el.dataset.videoid,
+      name: el.closest(".media-card").querySelector(".media-card-name").textContent
+    }));
+    lbIndex = thumbs.indexOf(thumbEl);
+    if (lbIndex === -1) lbIndex = 0;
+    lbShow();
+    document.getElementById("lightbox").classList.add("open");
+    document.body.style.overflow = "hidden";
   }
- 
+
+  function lbShow() {
+    const item = lbItems[lbIndex];
+    const lbImg = document.getElementById("lb-img");
+    const lbVideoWrap = document.getElementById("lb-video-wrap");
+    const lbIframe = document.getElementById("lb-iframe");
+    const lbRotBtn = document.getElementById("lb-rotate");
+    if (item.type === "photo") {
+      lbIframe.src = "";
+      lbVideoWrap.style.display = "none";
+      lbImg.style.display = "";
+      lbRotBtn.style.display = "";
+      lbImg.src = item.el.src;
+      lbImg.alt = item.el.alt;
+      const rot = lbRotation[item.el.src] || 0;
+      lbImg.style.transform = "rotate(" + rot + "deg)";
+      if (rot === 90 || rot === 270) { lbImg.style.maxWidth = "80vh"; lbImg.style.maxHeight = "92vw"; }
+      else { lbImg.style.maxWidth = "92vw"; lbImg.style.maxHeight = "80vh"; }
+      document.getElementById("lb-caption").textContent = item.el.alt;
+    } else {
+      lbImg.style.display = "none";
+      lbRotBtn.style.display = "none";
+      lbVideoWrap.style.display = "";
+      lbIframe.src = "https://www.youtube.com/embed/" + item.id + "?autoplay=1&rel=0";
+      document.getElementById("lb-caption").textContent = item.name;
+    }
+    document.getElementById("lb-counter").textContent = (lbIndex + 1) + " / " + lbItems.length;
+  }
+
   function lbNav(dir) {
-    lbIndex = (lbIndex + dir + lbImages.length) % lbImages.length;
+    if (lbItems[lbIndex].type === "video") document.getElementById("lb-iframe").src = "";
+    lbIndex = (lbIndex + dir + lbItems.length) % lbItems.length;
     lbShow();
   }
- 
+
   function lbRotate() {
-    const src = lbImages[lbIndex].src;
+    const item = lbItems[lbIndex];
+    if (item.type !== "photo") return;
+    const src = item.el.src;
     lbRotation[src] = ((lbRotation[src] || 0) + 90) % 360;
     lbShow();
   }
- 
+
   function lbClose() {
     document.getElementById("lightbox").classList.remove("open");
+    document.getElementById("lb-iframe").src = "";
     document.body.style.overflow = "";
   }
- 
+
   document.addEventListener("keydown", e => {
     if (!document.getElementById("lightbox").classList.contains("open")) return;
     if (e.key === "ArrowRight") lbNav(1);
@@ -785,7 +819,7 @@
     else if (e.key === "Escape") lbClose();
     else if (e.key === "r" || e.key === "R") lbRotate();
   });
- 
+
   // Event delegation - works even on hidden sections
   document.addEventListener("click", e => {
     const lb = document.getElementById("lightbox");
@@ -793,8 +827,10 @@
     if (e.target.closest("#lightbox")) return;
     const card = e.target.closest(".media-card");
     if (!card) return;
+    const thumb = card.querySelector(".video-preview");
+    if (thumb) { lbOpenVideo(thumb); return; }
     const img = card.querySelector("img");
-    if (img) lbOpen(img);
+    if (img) lbOpenPhoto(img);
   });
 </script>
  
@@ -804,6 +840,7 @@
   <button class="lb-btn" id="lb-prev" onclick="lbNav(-1)">&#8249;</button>
   <div id="lb-img-wrap">
     <img id="lb-img" src="" alt="" />
+    <div id="lb-video-wrap"><iframe id="lb-iframe" src="" allowfullscreen allow="autoplay; encrypted-media"></iframe></div>
   </div>
   <button class="lb-btn" id="lb-next" onclick="lbNav(1)">&#8250;</button>
   <div id="lb-caption"></div>
