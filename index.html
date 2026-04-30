@@ -790,11 +790,13 @@
     if (e.target === document.getElementById("lightbox")) lbClose();
   });
  
-  // Attach click handlers to all photo cards after page load
-  document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll(".media-card img").forEach(img => {
-      img.parentElement.parentElement.addEventListener("click", () => lbOpen(img));
-    });
+  // Event delegation - works even on hidden sections
+  document.addEventListener("click", e => {
+    if (e.target.closest("#lightbox")) return;
+    const card = e.target.closest(".media-card");
+    if (!card) return;
+    const img = card.querySelector("img");
+    if (img) lbOpen(img);
   });
 </script>
  
