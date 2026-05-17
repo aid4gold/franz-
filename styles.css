@@ -117,6 +117,7 @@ body { font-family:"Nunito",sans-serif; background:var(--gray-bg); color:var(--t
 .thumb-type { font-size:0.65rem; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--orange-dark); background:var(--white); padding:2px 8px; border-radius:20px; border:1px solid var(--orange-light); }
 .media-card-body { padding:0.5rem 0.7rem 0.55rem; }
 .media-card-name { font-size:0.82rem; font-weight:700; color:var(--text); line-height:1.35; word-break:break-word; }
+.media-card-desc { font-size:0.72rem; color:var(--gray-text); margin-top:0.25rem; line-height:1.4; }
 .subsection--video .media-card-name { font-size:0.95rem; }
 
 /* ── VIDEO THUMBNAIL + PLAY BUTTON ── */
