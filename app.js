@@ -340,33 +340,41 @@
     initUiBindings();
   }
 
-  // Hero photo: visible on load, disappears on scroll, restore button appears
+  // Hero photo: visible on load, disappears when hero scrolls off screen, restore pill appears
   (function () {
     var photo = document.querySelector('.hero-photo');
-    var btn = document.getElementById('hero-photo-btn');
-    if (!photo) return;
+    var btn   = document.getElementById('hero-photo-btn');
+    var hero  = document.querySelector('.hero');
+    if (!photo || !hero) return;
     var dismissed = false;
+    var generation = 0; // guards stale transitionend callbacks
 
     function onScroll() {
-      if (window.scrollY > (photo.offsetHeight || 80)) dismiss();
+      if (window.innerWidth >= 640) return;
+      if (hero.getBoundingClientRect().bottom < 0) dismiss();
     }
 
     function dismiss() {
-      if (dismissed || window.innerWidth >= 640) return;
+      if (dismissed) return;
       dismissed = true;
+      var gen = ++generation;
+      window.removeEventListener('scroll', onScroll); // matches { passive:true } add — no capture flag
       photo.classList.add('hero-photo--hidden');
-      photo.addEventListener('transitionend', function () { photo.style.display = 'none'; }, { once: true });
-      window.removeEventListener('scroll', onScroll, true);
+      photo.addEventListener('transitionend', function () {
+        if (generation === gen) photo.style.display = 'none'; // skip if restored in the meantime
+      }, { once: true });
       if (btn) btn.classList.add('hero-photo-btn--visible');
     }
 
     function restore() {
       dismissed = false;
+      ++generation; // invalidates any pending transitionend from the dismiss
       photo.style.display = '';
-      requestAnimationFrame(function () { photo.classList.remove('hero-photo--hidden'); });
+      photo.offsetHeight;  // force reflow so the browser registers display change before class removal
+      photo.classList.remove('hero-photo--hidden');
       if (btn) btn.classList.remove('hero-photo-btn--visible');
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      setTimeout(function () { window.addEventListener('scroll', onScroll, { passive: true }); }, 1000);
+      setTimeout(function () { window.addEventListener('scroll', onScroll, { passive: true }); }, 900);
     }
 
     window.addEventListener('scroll', onScroll, { passive: true });
