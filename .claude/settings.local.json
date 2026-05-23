@@ -6,7 +6,8 @@
       "Bash(Get-ChildItem -Path \"d:\\\\VSC\\\\Franz\" -Recurse -Directory)",
       "Bash(Select-Object -First 30)",
       "Bash(Format-Table -AutoSize)",
-      "Bash(cd \"d:\\\\\\\\VSC\\\\\\\\Franz\")"
+      "Bash(cd \"d:\\\\\\\\VSC\\\\\\\\Franz\")",
+      "Bash(Copy-Item \"update\\\\*.webp\" \".\" -Force)"
     ]
   }
 }
