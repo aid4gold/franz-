@@ -339,20 +339,21 @@
     initUiBindings();
   }
 
-  // Hero photo: visible on load, disappears on first tap/click (mobile only)
+  // Hero photo: visible on load, disappears when user scrolls past it (mobile only)
   (function () {
     var photo = document.querySelector('.hero-photo');
     if (!photo) return;
+    var dismissed = false;
     function dismiss() {
-      if (window.innerWidth >= 640) return;
+      if (dismissed || window.innerWidth >= 640) return;
+      dismissed = true;
       photo.classList.add('hero-photo--hidden');
       photo.addEventListener('transitionend', function () { photo.style.display = 'none'; }, { once: true });
-      document.removeEventListener('click', dismiss, true);
-      document.removeEventListener('touchstart', dismiss, true);
+      window.removeEventListener('scroll', onScroll, true);
     }
-    setTimeout(function () {
-      document.addEventListener('click', dismiss, true);
-      document.addEventListener('touchstart', dismiss, { capture: true, passive: true });
-    }, 800);
+    function onScroll() {
+      if (window.scrollY > (photo.offsetHeight || 80)) dismiss();
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
   }());
 
