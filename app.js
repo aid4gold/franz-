@@ -23,7 +23,13 @@
     document.getElementById("sec-" + id).classList.add("active");
     btn.classList.add("active");
     btn.scrollIntoView({ block:"nearest", inline:"center", behavior:"smooth" });
-    window.scrollTo({ top:0, behavior:"smooth" });
+    if (window.innerWidth >= 640) {
+      const sec = document.getElementById("sec-" + id);
+      const offset = sec.getBoundingClientRect().top + window.scrollY - 110;
+      window.scrollTo({ top: Math.max(0, offset), behavior: "smooth" });
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
     document.querySelectorAll(".room-drawer-item[data-section]").forEach(b => {
       b.classList.toggle("active", b.dataset.section === id);
     });
