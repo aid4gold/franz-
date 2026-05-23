@@ -333,3 +333,20 @@
     initUiBindings();
   }
 
+  // Hero photo: visible on load, disappears on first tap/click (mobile only)
+  (function () {
+    var photo = document.querySelector('.hero-photo');
+    if (!photo) return;
+    function dismiss() {
+      if (window.innerWidth >= 640) return;
+      photo.classList.add('hero-photo--hidden');
+      photo.addEventListener('transitionend', function () { photo.style.display = 'none'; }, { once: true });
+      document.removeEventListener('click', dismiss, true);
+      document.removeEventListener('touchstart', dismiss, true);
+    }
+    setTimeout(function () {
+      document.addEventListener('click', dismiss, true);
+      document.addEventListener('touchstart', dismiss, { capture: true, passive: true });
+    }, 800);
+  }());
+
