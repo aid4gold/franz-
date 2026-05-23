@@ -6,6 +6,7 @@
     if (document.getElementById("pw-input").value === PASSWORD) {
       document.getElementById("login-screen").style.display = "none";
       document.getElementById("app").style.display = "block";
+      window.scrollTo({ top: 0 });
     } else {
       document.getElementById("login-error").style.display = "block";
     }
@@ -339,21 +340,36 @@
     initUiBindings();
   }
 
-  // Hero photo: visible on load, disappears when user scrolls past it (mobile only)
+  // Hero photo: visible on load, disappears on scroll, restore button appears
   (function () {
     var photo = document.querySelector('.hero-photo');
+    var btn = document.getElementById('hero-photo-btn');
     if (!photo) return;
     var dismissed = false;
+
+    function onScroll() {
+      if (window.scrollY > (photo.offsetHeight || 80)) dismiss();
+    }
+
     function dismiss() {
       if (dismissed || window.innerWidth >= 640) return;
       dismissed = true;
       photo.classList.add('hero-photo--hidden');
       photo.addEventListener('transitionend', function () { photo.style.display = 'none'; }, { once: true });
       window.removeEventListener('scroll', onScroll, true);
+      if (btn) btn.classList.add('hero-photo-btn--visible');
     }
-    function onScroll() {
-      if (window.scrollY > (photo.offsetHeight || 80)) dismiss();
+
+    function restore() {
+      dismissed = false;
+      photo.style.display = '';
+      requestAnimationFrame(function () { photo.classList.remove('hero-photo--hidden'); });
+      if (btn) btn.classList.remove('hero-photo-btn--visible');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setTimeout(function () { window.addEventListener('scroll', onScroll, { passive: true }); }, 1000);
     }
+
     window.addEventListener('scroll', onScroll, { passive: true });
+    if (btn) btn.addEventListener('click', restore);
   }());
 
