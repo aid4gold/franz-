@@ -332,6 +332,17 @@
       if (navBtn) showSection("manual", navBtn);
       setTimeout(() => document.getElementById("denni-rezim")?.scrollIntoView({ behavior: "smooth", block: "start" }), 120);
     });
+
+    // Links from the care manual to a concrete photo group in a room section
+    document.addEventListener("click", e => {
+      const link = e.target.closest(".section-photo-link");
+      if (!link) return;
+      e.preventDefault();
+      const sectionId = link.dataset.section;
+      const navBtn = document.querySelector(`.nav-btn[data-section="${sectionId}"]`);
+      if (navBtn) showSection(sectionId, navBtn);
+      setTimeout(() => document.getElementById(link.dataset.target)?.scrollIntoView({ behavior: "smooth", block: "center" }), 180);
+    });
   }
 
   if (document.readyState === "loading") {

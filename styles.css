@@ -114,6 +114,8 @@ body { font-family:"Nunito",sans-serif; background:var(--gray-bg); color:var(--t
 .manual-shortcut { margin-top:-0.4rem; }
 .manual-shortcut-link { color:var(--orange-dark); font-weight:800; text-decoration:underline; text-underline-offset:2px; }
 .manual-shortcut-link:hover { color:var(--orange); }
+.section-photo-link { color:var(--orange-dark); font-weight:800; text-decoration:underline; text-underline-offset:2px; }
+.section-photo-link:hover { color:var(--orange); }
 
 /* ── SUBSECTIONS ── */
 .subsection { margin-bottom:1rem; }
